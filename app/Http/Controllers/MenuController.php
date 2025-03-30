@@ -6,44 +6,98 @@ use App\Models\Menu;
 use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
 {
     public function index()
     {
-        $menuItems = Menu::orderBy('category')->get();
-        return view('menu.index', compact('menuItems'));
+        $menu = Menu::latest()->get();
+        return view('menu.index', compact('menu'));
+    }
+
+    public function create()
+    {
+        return view('menu.create');
     }
 
     public function store(StoreMenuRequest $request)
     {
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('menu', 'public');
-        }
+        $imagePath = $request->file('image')->store('menu-images', 'public');
+        
+        $menu = Menu::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'category' => $request->category,
+            'image' => $imagePath,
+            'status' => $request->status ?? 'available'
+        ]);
 
-        Menu::create(array_merge(
-            $request->validated(),
-            ['image' => $imagePath ?? null]
-        ));
+        return redirect()->route('menu.index')
+            ->with('success', 'Menu item added successfully!');
+    }
 
-        return redirect()->route('menu.index')->with('success', 'Menu item created successfully');
+    public function show(Menu $menu)
+    {
+        return view('menu.show', compact('menu'));
+    }
+
+    public function edit(Menu $menu)
+    {
+        return view('menu.edit', compact('menu'));
     }
 
     public function update(UpdateMenuRequest $request, Menu $menu)
     {
+        $data = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'category' => $request->category,
+            'status' => $request->status ?? $menu->status
+        ];
+
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('menu', 'public');
-            $menu->image = $imagePath;
+            // Delete old image
+            if ($menu->image) {
+                Storage::disk('public')->delete($menu->image);
+            }
+            $data['image'] = $request->file('image')->store('menu-images', 'public');
         }
 
-        $menu->update($request->validated());
-        
-        return redirect()->route('menu.index')->with('success', 'Menu item updated successfully');
+        $menu->update($data);
+
+        return redirect()->route('menu.index')
+            ->with('success', 'Menu item updated successfully!');
     }
 
     public function destroy(Menu $menu)
     {
-        $menu->delete();
-        return redirect()->route('menu.index')->with('success', 'Menu item deleted successfully');
+        try {
+            if ($menu->image) {
+                Storage::disk('public')->delete($menu->image);
+            }
+            
+            $menu->delete();
+            return redirect()->route('menu.index')
+                ->with('success', 'Menu item deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->route('menu.index')
+                ->with('error', 'Failed to delete menu item. It may be in use.');
+        }
+    }
+
+    public function updateStatus(Request $request, Menu $menu)
+    {
+        $request->validate([
+            'status' => ['required', 'in:available,unavailable']
+        ]);
+
+        $menu->update([
+            'status' => $request->status
+        ]);
+        
+        return back()->with('success', 'Menu status updated successfully!');
     }
 }

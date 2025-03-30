@@ -16,6 +16,7 @@ return new class extends Migration
             $table->decimal('unit_cost', 10, 2)->nullable();
             $table->integer('reorder_level')->default(10);
             $table->timestamps();
+            $table->index(['item_name', 'supplier']); // Add index for frequently searched columns
         });
     }
 
