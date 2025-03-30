@@ -29,7 +29,9 @@ class ReservationController extends Controller
             'date' => $request->date,
             'time' => $request->time,
             'guests' => $request->guests,
+            'contact_number' => $request->contact_number, 
             'status' => 'pending',
+            'special_requests' => $request->special_requests 
         ]);
 
         return redirect()->route('reservations.index')

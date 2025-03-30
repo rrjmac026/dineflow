@@ -1,7 +1,29 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
 
-// Initialize Alpine store for sidebar with default state
+window.Alpine = Alpine;
+
+// Initialize Dark Mode store
+Alpine.store('darkMode', {
+    on: localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
+    toggle() {
+        this.on = !this.on;
+        localStorage.theme = this.on ? 'dark' : 'light';
+        this.updateDOM();
+    },
+    updateDOM() {
+        if (this.on) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    },
+    init() {
+        this.updateDOM();
+    }
+});
+
+// Initialize Sidebar store
 Alpine.store('sidebar', {
     isOpen: window.innerWidth >= 1024, // Default open on desktop, closed on mobile
     toggle() {
@@ -10,15 +32,8 @@ Alpine.store('sidebar', {
     }
 });
 
-// Initialize Alpine store for dark mode
-Alpine.store('darkMode', {
-    on: localStorage.getItem('theme') === 'dark',
-    toggle() {
-        this.on = !this.on;
-        localStorage.setItem('theme', this.on ? 'dark' : 'light');
-        document.documentElement.classList.toggle('dark', this.on);
-    }
-});
-
-window.Alpine = Alpine;
+// Start Alpine
 Alpine.start();
+
+// Initialize dark mode on page load
+Alpine.store('darkMode').init();

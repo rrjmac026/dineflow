@@ -12,53 +12,68 @@
                     <form method="POST" action="{{ route('menu.store') }}" enctype="multipart/form-data" class="space-y-6">
                         @csrf
 
-                        <div>
-                            <x-input-label for="name" :value="__('Name')" />
-                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
-                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Left Column -->
+                            <div class="space-y-6">
+                                <div>
+                                    <x-input-label for="name" :value="__('Name')" />
+                                    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
+                                    <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <x-input-label for="description" :value="__('Description')" />
+                                    <textarea id="description" name="description" rows="3" 
+                                        class="block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-amber-500 dark:focus:border-amber-600 focus:ring-amber-500 dark:focus:ring-amber-600 rounded-md shadow-sm" 
+                                        required>{{ old('description') }}</textarea>
+                                    <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <x-input-label for="price" :value="__('Price')" />
+                                    <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" step="0.01" :value="old('price')" required />
+                                    <x-input-error :messages="$errors->get('price')" class="mt-2" />
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="space-y-6">
+                                <div>
+                                    <x-input-label for="category" :value="__('Category')" />
+                                    <select id="category" name="category" 
+                                        class="block w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-amber-500 dark:focus:border-amber-600 focus:ring-amber-500 dark:focus:ring-amber-600 rounded-md shadow-sm">
+                                        <option value="main">Main Course</option>
+                                        <option value="appetizer">Appetizer</option>
+                                        <option value="dessert">Dessert</option>
+                                        <option value="beverage">Beverage</option>
+                                    </select>
+                                    <x-input-error :messages="$errors->get('category')" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <x-input-label for="status" :value="__('Status')" />
+                                    <select id="status" name="status" 
+                                        class="block w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-amber-500 dark:focus:border-amber-600 focus:ring-amber-500 dark:focus:ring-amber-600 rounded-md shadow-sm">
+                                        <option value="available">Available</option>
+                                        <option value="unavailable">Unavailable</option>
+                                    </select>
+                                    <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <x-input-label for="image" :value="__('Image')" />
+                                    <input type="file" id="image" name="image" accept="image/*" required
+                                        class="block w-full mt-1 text-sm text-gray-500 dark:text-gray-400
+                                        file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
+                                        file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700
+                                        hover:file:bg-amber-100 dark:file:bg-amber-900 dark:file:text-amber-300" />
+                                    <x-input-error :messages="$errors->get('image')" class="mt-2" />
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <x-input-label for="description" :value="__('Description')" />
-                            <textarea id="description" name="description" rows="3" 
-                                class="block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-amber-500 dark:focus:border-amber-600 focus:ring-amber-500 dark:focus:ring-amber-600 rounded-md shadow-sm" 
-                                required>{{ old('description') }}</textarea>
-                            <x-input-error :messages="$errors->get('description')" class="mt-2" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="price" :value="__('Price')" />
-                            <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" step="0.01" :value="old('price')" required />
-                            <x-input-error :messages="$errors->get('price')" class="mt-2" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="category" :value="__('Category')" />
-                            <select id="category" name="category" 
-                                class="block w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-amber-500 dark:focus:border-amber-600 focus:ring-amber-500 dark:focus:ring-amber-600 rounded-md shadow-sm">
-                                <option value="main">Main Course</option>
-                                <option value="appetizer">Appetizer</option>
-                                <option value="dessert">Dessert</option>
-                                <option value="beverage">Beverage</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('category')" class="mt-2" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="image" :value="__('Image')" />
-                            <input type="file" id="image" name="image" accept="image/*" required
-                                class="block w-full text-sm text-gray-500 dark:text-gray-400
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-md file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-amber-50 file:text-amber-700
-                                hover:file:bg-amber-100
-                                dark:file:bg-amber-900 dark:file:text-amber-300" />
-                            <x-input-error :messages="$errors->get('image')" class="mt-2" />
-                        </div>
-
-                        <div class="flex items-center gap-4">
-                            <x-primary-button>{{ __('Add Item') }}</x-primary-button>
+                        <div class="flex items-center gap-4 mt-6">
+                            <x-primary-button>{{ __('Add Menu Item') }}</x-primary-button>
                             <a href="{{ route('menu.index') }}" class="text-gray-600 dark:text-gray-400 hover:underline">Cancel</a>
                         </div>
                     </form>

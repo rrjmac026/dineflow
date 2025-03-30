@@ -14,6 +14,7 @@
                         @method('PUT')
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Left Column -->
                             <div class="space-y-6">
                                 <div>
                                     <x-input-label for="name" :value="__('Name')" />
@@ -34,7 +35,10 @@
                                     <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" step="0.01" :value="old('price', $menu->price)" required />
                                     <x-input-error :messages="$errors->get('price')" class="mt-2" />
                                 </div>
+                            </div>
 
+                            <!-- Right Column -->
+                            <div class="space-y-6">
                                 <div>
                                     <x-input-label for="category" :value="__('Category')" />
                                     <select id="category" name="category" 
@@ -57,32 +61,26 @@
                                     </select>
                                     <x-input-error :messages="$errors->get('status')" class="mt-2" />
                                 </div>
-                            </div>
 
-                            <div class="space-y-6">
                                 <div>
                                     <x-input-label for="current_image" :value="__('Current Image')" />
-                                    <img src="{{ Storage::url($menu->image) }}" alt="{{ $menu->name }}" 
-                                         class="mt-2 w-full h-48 object-cover rounded-lg">
+                                    <img src="{{ Storage::url($menu->image) }}" alt="{{ $menu->name }}" class="mt-2 w-full h-48 object-cover rounded-lg">
                                 </div>
 
                                 <div>
                                     <x-input-label for="image" :value="__('New Image (optional)')" />
                                     <input type="file" id="image" name="image" accept="image/*"
-                                        class="block w-full text-sm text-gray-500 dark:text-gray-400
-                                        file:mr-4 file:py-2 file:px-4
-                                        file:rounded-md file:border-0
-                                        file:text-sm file:font-semibold
-                                        file:bg-amber-50 file:text-amber-700
-                                        hover:file:bg-amber-100
-                                        dark:file:bg-amber-900 dark:file:text-amber-300" />
+                                        class="block w-full mt-1 text-sm text-gray-500 dark:text-gray-400
+                                        file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
+                                        file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700
+                                        hover:file:bg-amber-100 dark:file:bg-amber-900 dark:file:text-amber-300" />
                                     <x-input-error :messages="$errors->get('image')" class="mt-2" />
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-4">
-                            <x-primary-button>{{ __('Update Item') }}</x-primary-button>
+                        <div class="flex items-center gap-4 mt-6">
+                            <x-primary-button>{{ __('Update Menu Item') }}</x-primary-button>
                             <a href="{{ route('menu.index') }}" class="text-gray-600 dark:text-gray-400 hover:underline">Cancel</a>
                         </div>
                     </form>
