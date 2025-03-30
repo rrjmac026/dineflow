@@ -1,14 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Inventory Management') }}
-            </h2>
-            <x-button-link href="{{ route('inventory.create') }}" class="bg-amber-500 hover:bg-amber-600">
-                <i class="fas fa-plus mr-2"></i>Add Item
-            </x-button-link>
-        </div>
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Inventory Management') }}
+        </h2>
     </x-slot>
+
+    <div class="flex justify-end px-8 mt-4">
+        <a href="{{ route('inventory.create') }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 rounded-lg transition-colors duration-200">
+            <i class="fas fa-plus mr-2"></i>Add Item
+        </a>
+    </div>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

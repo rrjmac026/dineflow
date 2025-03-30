@@ -4,9 +4,9 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Inventory Item Details') }}
             </h2>
-            <x-button-link href="{{ route('inventory.edit', $inventory) }}" class="bg-amber-500 hover:bg-amber-600">
+            <a href="{{ route('inventory.edit', $inventory) }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 rounded-lg transition-colors duration-200">
                 <i class="fas fa-edit mr-2"></i>Edit Item
-            </x-button-link>
+            </a>
         </div>
     </x-slot>
 
@@ -62,10 +62,11 @@
                         </div>
                     </div>
 
+                    <!-- Bottom back button -->
                     <div class="mt-6 flex items-center gap-4">
-                        <x-button-link href="{{ route('inventory.index') }}" class="bg-gray-500 hover:bg-gray-600">
+                        <a href="{{ route('inventory.index') }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 dark:bg-gray-500 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200">
                             <i class="fas fa-arrow-left mr-2"></i>Back to List
-                        </x-button-link>
+                        </a>
                     </div>
                 </div>
             </div>
