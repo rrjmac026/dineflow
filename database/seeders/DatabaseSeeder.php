@@ -22,18 +22,19 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
-            'name' => 'Jam',
-            'email' => 'jam@jam.com',
+            'name' => 'Customer 1',
+            'email' => 'customer@customer.com',
             'password' => bcrypt('password'), // password
             'role' => 'customer', // Assuming you have a role column
         ]);
 
         User::factory()->create([
-            'name' => 'Rey Rameses Jude S Macalutas',
-            'email' => '1901102366@student.buksu.edu.ph',
+            'name' => 'Customer 2',
+            'email' => 'customer2@customer.com',
             'password' => bcrypt('password'), // password
-            'role' => 'Manager', // Assuming you have a role column
+            'role' => 'customer', // Assuming you have a role column
         ]);
+
     }
 }
 
