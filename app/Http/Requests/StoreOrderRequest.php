@@ -14,10 +14,13 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_id' => ['required', 'exists:users,id'],
+            'menu_id' => ['required', 'exists:menus,id'],
+            'order_number' => ['required', 'string', 'unique:orders,order_number'],
+            'table_number' => ['required', 'integer', 'min:1'],
+            'status' => ['required', 'in:pending,preparing,completed,cancelled'],
+            'payment_status' => ['required', 'in:paid,unpaid,refunded'],
             'total_price' => ['required', 'numeric', 'min:0'],
-            'items' => ['required', 'array', 'min:1'],
-            'items.*.menu_id' => ['required', 'exists:menus,id'],
-            'items.*.quantity' => ['required', 'integer', 'min:1'],
             'special_instructions' => ['nullable', 'string', 'max:500']
         ];
     }
@@ -25,13 +28,10 @@ class StoreOrderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'total_price.required' => 'Order total is required',
-            'total_price.min' => 'Order total must be greater than zero',
-            'items.required' => 'Order must contain at least one item',
-            'items.min' => 'Order must contain at least one item',
-            'items.*.menu_id.exists' => 'Selected menu item does not exist',
-            'items.*.quantity.min' => 'Quantity must be at least 1',
-            'special_instructions.max' => 'Special instructions cannot exceed 500 characters'
+            'user_id.required' => 'Please select a customer',
+            'menu_id.required' => 'Please select a menu item',
+            'table_number.required' => 'Table number is required',
+            'total_price.min' => 'Total price must be greater than zero'
         ];
     }
 }

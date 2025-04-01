@@ -12,7 +12,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::with(['user', 'items.menu'])
+        $orders = Order::with(['user', 'menu'])
             ->latest()
             ->get();
         return view('orders.index', compact('orders'));
@@ -27,31 +27,23 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request)
     {
         $order = Order::create([
-            'user_id' => auth()->id(),
-            'status' => 'pending',
+            'user_id' => $request->user_id,
+            'menu_id' => $request->menu_id,
+            'order_number' => Order::generateOrderNumber(),
+            'table_number' => $request->table_number,
+            'status' => $request->status,
+            'payment_status' => $request->payment_status,
             'total_price' => $request->total_price,
-            'special_instructions' => $request->special_instructions,
-            'payment_status' => 'unpaid',
-            'table_number' => $request->table_number
+            'special_instructions' => $request->special_instructions
         ]);
 
-        // Store order items
-        foreach ($request->items as $item) {
-            $order->items()->create([
-                'menu_id' => $item['menu_id'],
-                'quantity' => $item['quantity'],
-                'unit_price' => $item['unit_price'],
-                'subtotal' => $item['quantity'] * $item['unit_price']
-            ]);
-        }
-
         return redirect()->route('orders.index')
-            ->with('success', 'Order placed successfully!');
+            ->with('success', 'Order created successfully!');
     }
 
     public function show(Order $order)
     {
-        $order->load(['user', 'items.menu']);
+        $order->load(['user', 'menu']);
         return view('orders.show', compact('order'));
     }
 
@@ -64,23 +56,13 @@ class OrderController extends Controller
     public function update(UpdateOrderRequest $request, Order $order)
     {
         $order->update([
+            'menu_id' => $request->menu_id,
+            'table_number' => $request->table_number,
             'status' => $request->status,
-            'total_price' => $request->total_price,
-            'special_instructions' => $request->special_instructions,
             'payment_status' => $request->payment_status,
-            'table_number' => $request->table_number
+            'total_price' => $request->total_price,
+            'special_instructions' => $request->special_instructions
         ]);
-
-        // Update order items
-        $order->items()->delete(); // Remove existing items
-        foreach ($request->items as $item) {
-            $order->items()->create([
-                'menu_id' => $item['menu_id'],
-                'quantity' => $item['quantity'],
-                'unit_price' => $item['unit_price'],
-                'subtotal' => $item['quantity'] * $item['unit_price']
-            ]);
-        }
 
         return redirect()->route('orders.index')
             ->with('success', 'Order updated successfully!');
@@ -89,7 +71,6 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         try {
-            $order->items()->delete();
             $order->delete();
             return redirect()->route('orders.index')
                 ->with('success', 'Order deleted successfully!');

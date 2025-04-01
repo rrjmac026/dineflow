@@ -14,6 +14,7 @@ class DashboardController extends Controller
     public function index()
     {
         $data = [
+            'total_customers' => User::where('role', 'customer')->count(),
             'total_orders' => Order::count(),
             'total_reservations' => Reservation::count(),
             'total_menu_items' => Menu::count(),

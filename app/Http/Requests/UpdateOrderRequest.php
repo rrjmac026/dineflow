@@ -15,8 +15,11 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', Rule::in(['pending', 'preparing', 'completed', 'cancelled'])],
-            'total_price' => ['sometimes', 'required', 'numeric', 'min:0'],
+            'menu_id' => ['required', 'exists:menus,id'],
+            'table_number' => ['required', 'integer', 'min:1'],
+            'status' => ['required', 'in:pending,preparing,completed,cancelled'],
+            'payment_status' => ['required', 'in:paid,unpaid,refunded'],
+            'total_price' => ['required', 'numeric', 'min:0'],
             'special_instructions' => ['nullable', 'string', 'max:500']
         ];
     }
@@ -24,10 +27,9 @@ class UpdateOrderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'status.required' => 'Order status is required',
-            'status.in' => 'Invalid order status',
-            'total_price.min' => 'Order total must be greater than zero',
-            'special_instructions.max' => 'Special instructions cannot exceed 500 characters'
+            'menu_id.required' => 'Please select a menu item',
+            'table_number.required' => 'Table number is required',
+            'total_price.min' => 'Total price must be greater than zero'
         ];
     }
 }

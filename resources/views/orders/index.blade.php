@@ -27,7 +27,7 @@
                                 <tr>
                                     <th class="py-3 px-6 text-left text-sm font-medium text-amber-900 dark:text-amber-100">Order ID</th>
                                     <th class="py-3 px-6 text-left text-sm font-medium text-amber-900 dark:text-amber-100">Table</th>
-                                    <th class="py-3 px-6 text-left text-sm font-medium text-amber-900 dark:text-amber-100">Items</th>
+                                    <th class="py-3 px-6 text-left text-sm font-medium text-amber-900 dark:text-amber-100">Menu Name</th>
                                     <th class="py-3 px-6 text-left text-sm font-medium text-amber-900 dark:text-amber-100">Total</th>
                                     <th class="py-3 px-6 text-left text-sm font-medium text-amber-900 dark:text-amber-100">Status</th>
                                     <th class="py-3 px-6 text-left text-sm font-medium text-amber-900 dark:text-amber-100">Payment</th>
@@ -37,9 +37,9 @@
                             <tbody class="divide-y divide-amber-200 dark:divide-amber-700">
                                 @forelse($orders as $order)
                                     <tr class="hover:bg-amber-50 dark:hover:bg-amber-800/50">
-                                        <td class="py-4 px-6 text-sm">#{{ $order->id }}</td>
+                                        <td class="py-4 px-6 text-sm">#{{ $order->order_number }}</td>
                                         <td class="py-4 px-6 text-sm">{{ $order->table_number }}</td>
-                                        <td class="py-4 px-6 text-sm">{{ $order->items->count() }}</td>
+                                        <td class="py-4 px-6 text-sm">{{ $order->menu->name }}</td>
                                         <td class="py-4 px-6 text-sm">₱{{ number_format($order->total_price, 2) }}</td>
                                         <td class="py-4 px-6 text-sm">
                                             <span class="px-2 py-1 text-xs rounded-full 

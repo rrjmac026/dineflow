@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,5 +30,16 @@ Route::middleware('auth', 'admin')->group(function () {
 
 });
 
+Route::middleware(['auth', 'verified', 'customer'])->group(function () {
+    // Customer Routes
+    Route::prefix('customer')->name('customer.')->group(function () {
+        Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('dashboard');
+        Route::get('/menu', [CustomerController::class, 'menu'])->name('menu');
+        Route::get('/orders', [CustomerController::class, 'orders'])->name('orders');
+        Route::get('/feedback', [CustomerController::class, 'feedback'])->name('feedback');
+        Route::post('/order', [CustomerController::class, 'placeOrder'])->name('order');
+        Route::post('/feedback', [CustomerController::class, 'submitFeedback'])->name('feedback.store');
+    });
+});
 
 require __DIR__.'/auth.php';
