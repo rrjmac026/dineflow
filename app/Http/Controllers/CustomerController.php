@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\Feedback;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -138,5 +139,51 @@ class CustomerController extends Controller
             ->get();
             
         return view('customer.feedback', compact('feedbacks'));
+    }
+
+    public function reservations()
+    {
+        $reservations = auth()->user()->reservations()->latest()->get();
+        return view('customer.reservations.index', compact('reservations'));
+    }
+
+    public function createReservation()
+    {
+        return view('customer.reservations.create');
+    }
+
+    public function storeReservation(Request $request)
+    {
+        $request->validate([
+            'date' => ['required', 'date', 'after_or_equal:today'],
+            'time' => ['required', 'date_format:H:i', 'after_or_equal:10:00', 'before:22:00'],
+            'guests' => ['required', 'integer', 'min:1', 'max:20'],
+            'contact_number' => ['required', 'string', 'regex:/^[0-9]{11}$/'],
+            'special_requests' => ['nullable', 'string', 'max:500']
+        ]);
+
+        $reservation = auth()->user()->reservations()->create([
+            'date' => $request->date,
+            'time' => $request->time,
+            'guests' => $request->guests,
+            'contact_number' => $request->contact_number,
+            'special_requests' => $request->special_requests,
+            'status' => 'pending'
+        ]);
+
+        return redirect()->route('customer.reservations')
+            ->with('success', 'Reservation created successfully! Please wait for confirmation.');
+    }
+
+    public function cancelReservation(Reservation $reservation)
+    {
+        if ($reservation->user_id !== auth()->id()) {
+            return redirect()->route('customer.reservations')
+                ->with('error', 'Unauthorized action.');
+        }
+
+        $reservation->update(['status' => 'cancelled']);
+        return redirect()->route('customer.reservations')
+            ->with('success', 'Reservation cancelled successfully.');
     }
 }

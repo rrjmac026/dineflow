@@ -42,6 +42,11 @@ Route::middleware(['auth', 'verified', 'customer'])->group(function () {
         // Remove both duplicates and use this single route
         Route::post('/place-order', [CustomerController::class, 'placeOrder'])->name('order');
         Route::delete('/orders/{order}/cancel', [CustomerController::class, 'cancelOrder'])->name('orders.cancel');
+
+        Route::get('/reservations', [CustomerController::class, 'reservations'])->name('reservations');
+        Route::get('/reservations/create', [CustomerController::class, 'createReservation'])->name('reservations.create');
+        Route::post('/reservations', [CustomerController::class, 'storeReservation'])->name('reservations.store');
+        Route::delete('/reservations/{reservation}', [CustomerController::class, 'cancelReservation'])->name('reservations.cancel');
     });
 });
 

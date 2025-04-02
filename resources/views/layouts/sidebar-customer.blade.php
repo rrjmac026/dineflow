@@ -17,6 +17,12 @@
                 <i class="fas fa-utensils w-5 h-5"></i>
                 <span>Menu</span>
             </a>
+            <a href="{{ route('customer.reservations') }}" 
+               class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 
+               {{ request()->routeIs('customer.reservations*') ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' : 'text-amber-900 dark:text-amber-100 hover:bg-amber-500/10 dark:hover:bg-amber-500/10' }}">
+                <i class="fas fa-calendar-alt w-5 h-5"></i>
+                <span>My Reservations</span>
+            </a>
         </div>
     </div>
 

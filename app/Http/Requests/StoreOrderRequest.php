@@ -18,7 +18,7 @@ class StoreOrderRequest extends FormRequest
             'menu_id' => ['required', 'exists:menus,id'],
             'order_number' => ['required', 'string', 'unique:orders,order_number'],
             'table_number' => ['required', 'integer', 'min:1'],
-            'status' => ['required', 'in:pending,preparing,completed,cancelled'],
+            'status' => ['required', 'in:pending,preparing,ready,completed,cancelled'],
             'payment_status' => ['required', 'in:paid,unpaid,refunded'],
             'total_price' => ['required', 'numeric', 'min:0'],
             'special_instructions' => ['nullable', 'string', 'max:500']
