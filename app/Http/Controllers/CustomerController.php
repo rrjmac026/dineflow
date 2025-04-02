@@ -26,31 +26,37 @@ class CustomerController extends Controller
 
     public function placeOrder(Request $request)
     {
-        
         try {
-
-            \Log::info('Order request received:', $request->all());
-            // Validate the request
             $request->validate([
                 'menu_id' => 'required|exists:menus,id',
                 'special_instructions' => 'nullable|string|max:500'
             ]);
 
-            // Get the menu item
             $menu = Menu::findOrFail($request->menu_id);
             
-            // Get next available table number
-            $occupiedTables = Order::whereIn('status', ['pending', 'preparing'])
-                                 ->pluck('table_number')
-                                 ->toArray();
-            
-            $availableTables = array_diff(range(1, 20), $occupiedTables);
-            
-            if (empty($availableTables)) {
-                return back()->with('error', 'Sorry, all tables are currently occupied. Please try again later.');
-            }
+            // Check if customer has pending/preparing orders
+            $existingOrder = Order::where('user_id', auth()->id())
+                ->whereIn('status', ['pending', 'preparing'])
+                ->latest()
+                ->first();
 
-            $tableNumber = min($availableTables);
+            if ($existingOrder) {
+                // Use the same table number as existing order
+                $tableNumber = $existingOrder->table_number;
+            } else {
+                // Find new available table
+                $occupiedTables = Order::whereIn('status', ['pending', 'preparing'])
+                    ->pluck('table_number')
+                    ->toArray();
+                
+                $availableTables = array_diff(range(1, 20), $occupiedTables);
+                
+                if (empty($availableTables)) {
+                    return back()->with('error', 'Sorry, all tables are currently occupied. Please try again later.');
+                }
+
+                $tableNumber = min($availableTables);
+            }
 
             // Create the order
             $order = Order::create([
@@ -64,7 +70,6 @@ class CustomerController extends Controller
                 'special_instructions' => $request->special_instructions
             ]);
 
-            // Redirect with success message
             return redirect()->route('customer.orders')
                 ->with('success', "Order placed successfully! Your table number is #{$tableNumber}");
 

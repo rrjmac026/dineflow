@@ -8,6 +8,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerManagementController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,7 +28,7 @@ Route::middleware('auth', 'admin')->group(function () {
     Route::resource('orders', OrderController::class);
     Route::resource('reservations', ReservationController::class);
     Route::resource('inventory', InventoryController::class);
-
+    Route::resource('customers', CustomerManagementController::class)->except(['edit', 'update', 'show']);
 });
 
 Route::middleware(['auth', 'verified', 'customer'])->group(function () {
