@@ -32,12 +32,14 @@
                 <i class="fas fa-calendar-alt w-5 h-5"></i>
                 <span>Reservations</span>
             </a>
+            @if(auth()->user()->role === 'admin')
             <a href="{{ route('feedback.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 
                {{ request()->routeIs('feedback.*') ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' : 'text-amber-900 dark:text-amber-100 hover:bg-amber-500/10 dark:hover:bg-amber-500/10' }}">
                 <i class="fas fa-star w-5 h-5"></i>
                 <span>Feedback</span>
             </a>
+            @endif
         </div>
     </div>
 
@@ -47,6 +49,7 @@
             Management
         </span>
         <div class="mt-2 space-y-1">
+            @if(auth()->user()->role === 'admin')
             <a href="{{ route('menu.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 
                {{ request()->routeIs('menu.*') ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' : 'text-amber-900 dark:text-amber-100 hover:bg-amber-500/10 dark:hover:bg-amber-500/10' }}">
@@ -59,6 +62,7 @@
                 <i class="fas fa-users w-5 h-5"></i>
                 <span>Customers</span>
             </a>
+            @endif
             <a href="{{ route('inventory.index') }}" 
                class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 
                {{ request()->routeIs('inventory.*') ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' : 'text-amber-900 dark:text-amber-100 hover:bg-amber-500/10 dark:hover:bg-amber-500/10' }}">

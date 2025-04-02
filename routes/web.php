@@ -25,10 +25,26 @@ Route::middleware('auth', 'admin')->group(function () {
 
     Route::resource('menu', MenuController::class);
     Route::resource('feedback', FeedbackController::class);
+    Route::resource('customers', CustomerManagementController::class)->except(['edit', 'update', 'show']);
+
+    // Admin can still access everything
     Route::resource('orders', OrderController::class);
     Route::resource('reservations', ReservationController::class);
     Route::resource('inventory', InventoryController::class);
-    Route::resource('customers', CustomerManagementController::class)->except(['edit', 'update', 'show']);
+});
+
+Route::middleware(['auth', 'manager'])->group(function () {
+    // Manager can only access orders, reservations and inventory
+    Route::resource('orders', OrderController::class);
+    Route::resource('reservations', ReservationController::class);
+    Route::resource('inventory', InventoryController::class);
+
+    // Additional order management routes
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+    Route::patch('/orders/{order}/payment', [OrderController::class, 'updatePayment'])->name('orders.update-payment');
+
+    // Additional reservation management routes
+    Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])->name('reservations.update-status');
 });
 
 Route::middleware(['auth', 'verified', 'customer'])->group(function () {
@@ -39,7 +55,6 @@ Route::middleware(['auth', 'verified', 'customer'])->group(function () {
         Route::get('/orders', [CustomerController::class, 'orders'])->name('orders');
         Route::get('/feedback', [CustomerController::class, 'feedback'])->name('feedback');
         Route::post('/feedback', [CustomerController::class, 'submitFeedback'])->name('feedback.store');
-        // Remove both duplicates and use this single route
         Route::post('/place-order', [CustomerController::class, 'placeOrder'])->name('order');
         Route::delete('/orders/{order}/cancel', [CustomerController::class, 'cancelOrder'])->name('orders.cancel');
 
