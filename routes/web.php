@@ -47,6 +47,17 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])->name('reservations.update-status');
 });
 
+Route::middleware(['auth', 'staff'])->group(function () {
+    // Staff can only access orders and customers
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+    
+    // Limited customer access - view only
+    Route::get('/customers', [CustomerManagementController::class, 'index'])->name('customers.index');
+    Route::get('/customers/{customer}', [CustomerManagementController::class, 'show'])->name('customers.show');
+});
+
 Route::middleware(['auth', 'verified', 'customer'])->group(function () {
     // Customer Routes
     Route::prefix('customer')->name('customer.')->group(function () {
