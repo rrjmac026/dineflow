@@ -57,10 +57,14 @@
                                     <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">{{ $item->description }}</p>
                                     <div class="flex justify-between items-center">
                                         <span class="text-amber-600 dark:text-amber-400 text-lg font-bold">₱{{ number_format($item->price, 2) }}</span>
-                                        <button onclick="openOrderModal({{ $item->id }}, '{{ $item->name }}')" 
-                                            class="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-4 py-2 rounded-lg hover:from-amber-600 hover:to-amber-700 transition-all duration-300 transform hover:scale-105">
-                                            <i class="fas fa-shopping-cart mr-1"></i> Order
-                                        </button>
+                                        <form method="POST" action="{{ route('customer.order') }}" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="menu_id" value="{{ $item->id }}">
+                                            <button type="submit" 
+                                                class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium rounded-lg transition-colors">
+                                                Order Now
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -70,21 +74,4 @@
             </div>
         </div>
     </div>
-
-    <!-- Order Modal -->
-    @include('customer.partials.order-modal')
-
-    @push('scripts')
-    <script>
-        function openOrderModal(menuId, menuName) {
-            document.getElementById('menu_id').value = menuId;
-            document.getElementById('menuName').textContent = menuName;
-            document.getElementById('orderModal').classList.remove('hidden');
-        }
-
-        function closeOrderModal() {
-            document.getElementById('orderModal').classList.add('hidden');
-        }
-    </script>
-    @endpush
 </x-app-layout>

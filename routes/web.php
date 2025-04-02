@@ -37,8 +37,10 @@ Route::middleware(['auth', 'verified', 'customer'])->group(function () {
         Route::get('/menu', [CustomerController::class, 'menu'])->name('menu');
         Route::get('/orders', [CustomerController::class, 'orders'])->name('orders');
         Route::get('/feedback', [CustomerController::class, 'feedback'])->name('feedback');
-        Route::post('/order', [CustomerController::class, 'placeOrder'])->name('order');
         Route::post('/feedback', [CustomerController::class, 'submitFeedback'])->name('feedback.store');
+        // Remove both duplicates and use this single route
+        Route::post('/place-order', [CustomerController::class, 'placeOrder'])->name('order');
+        Route::delete('/orders/{order}/cancel', [CustomerController::class, 'cancelOrder'])->name('orders.cancel');
     });
 });
 

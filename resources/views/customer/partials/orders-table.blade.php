@@ -7,6 +7,7 @@
                 <th class="px-6 py-3 text-left text-xs font-medium text-amber-700 dark:text-amber-200 uppercase tracking-wider">Date</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-amber-700 dark:text-amber-200 uppercase tracking-wider">Status</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-amber-700 dark:text-amber-200 uppercase tracking-wider">Total</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-amber-700 dark:text-amber-200 uppercase tracking-wider">Actions</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -46,10 +47,24 @@
                         </span>
                     </td>
                     <td class="px-6 py-4 font-medium">₱{{ number_format($order->total_price, 2) }}</td>
+                    <td class="px-6 py-4">
+                        @if(in_array($order->status, ['pending', 'preparing']))
+                            <form action="{{ route('customer.orders.cancel', $order) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                    onclick="return confirm('Are you sure you want to cancel this order?')"
+                                    class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                    <i class="fas fa-times-circle mr-1"></i>
+                                    Cancel Order
+                                </button>
+                            </form>
+                        @endif
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="px-6 py-12 text-center">
+                    <td colspan="6" class="px-6 py-12 text-center">
                         <div class="flex flex-col items-center">
                             <div class="text-amber-500 mb-4">
                                 <i class="fas fa-shopping-cart text-6xl"></i>
