@@ -9,6 +9,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerManagementController;
+use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
         Route::get('/', function () {
@@ -29,6 +30,7 @@ use Illuminate\Support\Facades\Route;
             Route::resource('orders', OrderController::class);
             Route::resource('reservations', ReservationController::class);
             Route::resource('inventory', InventoryController::class);
+            Route::resource('users', UserManagementController::class);
         });
 
         // Route::middleware(['auth', 'manager'])->group(function () {

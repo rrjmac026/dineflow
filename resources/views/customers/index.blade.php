@@ -38,14 +38,14 @@
                                         <td class="py-4 px-6 text-sm">{{ $customer->email }}</td>
                                         <td class="py-4 px-6 text-sm">{{ $customer->created_at->format('M d, Y') }}</td>
                                         <td class="py-4 px-6 text-sm space-x-2">
-                                            <form action="{{ route('customers.destroy', $customer) }}" method="POST" class="inline">
+                                            <button type="button" 
+                                                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                                onclick="return confirmAction('Are you sure you want to delete this customer?', 'delete-customer-{{ $customer->id }}')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <form id="delete-customer-{{ $customer->id }}" action="{{ route('customers.destroy', $customer) }}" method="POST" class="hidden">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" 
-                                                    class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                                                    onclick="return confirm('Are you sure you want to delete this customer?')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
                                             </form>
                                         </td>
                                     </tr>

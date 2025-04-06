@@ -50,5 +50,6 @@
                 </div>
             </div>
         </div>
+        <x-alert-script />
     </body>
 </html>

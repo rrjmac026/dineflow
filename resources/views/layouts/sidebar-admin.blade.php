@@ -87,6 +87,32 @@
                 <span>Inventory</span>
             </a>
             @endif
+
+            {{-- Show Users link only to admin --}}
+            @if(auth()->user()->role === 'admin')
+            <a href="{{ route('users.index') }}" 
+               class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 
+               {{ request()->routeIs('users.*') ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' : 'text-amber-900 dark:text-amber-100 hover:bg-amber-500/10 dark:hover:bg-amber-500/10' }}">
+                <i class="fas fa-users-cog w-5 h-5"></i>
+                <span>Users</span>
+            </a>
+            @endif
         </div>
     </div>
+
+    <script>
+        function confirmDelete(formId) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                document.getElementById(formId).submit();
+            }
+            return false;
+        }
+
+        function confirmAction(message, formId) {
+            if (confirm(message)) {
+                document.getElementById(formId).submit();
+            }
+            return false;
+        }
+    </script>
 </nav>
