@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
             return view('welcome');
         });
 
+        Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+        Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -34,30 +37,6 @@ use Illuminate\Support\Facades\Route;
             Route::resource('users', UserManagementController::class);
         });
 
-        // Route::middleware(['auth', 'manager'])->group(function () {
-        //     // Manager can only access orders, reservations and inventory
-        //     Route::resource('orders', OrderController::class);
-        //     Route::resource('reservations', ReservationController::class);
-        //     Route::resource('inventory', InventoryController::class);
-
-        //     // Additional order management routes
-        //     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
-        //     Route::patch('/orders/{order}/payment', [OrderController::class, 'updatePayment'])->name('orders.update-payment');
-
-        //     // Additional reservation management routes
-        //     Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])->name('reservations.update-status');
-        // });
-
-        // Route::middleware(['auth', 'staff'])->group(function () {
-        //     // Staff can only access orders and customers
-        //     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-        //     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-        //     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
-            
-        //     // Limited customer access - view only
-        //     Route::get('/customers', [CustomerManagementController::class, 'index'])->name('customers.index');
-        //     Route::get('/customers/{customer}', [CustomerManagementController::class, 'show'])->name('customers.show');
-        // });
 
         Route::middleware(['auth', 'customer'])->group(function () {
             // Customer Routes
@@ -77,7 +56,6 @@ use Illuminate\Support\Facades\Route;
             });
         });
 
-Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
-Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
 
 require __DIR__.'/auth.php';
