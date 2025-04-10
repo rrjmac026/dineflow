@@ -65,8 +65,12 @@ class SuperAdminController extends Controller
                 'domain' => $tenant->subdomain . '.dineflow.test'
             ]);
 
-            // Update tenant status
+            // Update tenant status and save database name in data
             $tenant->status = 'approved';
+            $tenant->data = json_encode([
+                'created_at' => now(),
+                'database' => 'tenant' . $tenant->id  // Match package's naming convention
+            ]);
             $tenant->save();
 
             // Run migrations within tenant context
