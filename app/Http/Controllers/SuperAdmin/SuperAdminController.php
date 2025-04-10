@@ -13,8 +13,10 @@ class SuperAdminController extends Controller
 {
     public function index()
     {
-        $tenants = Tenant::all();
-        return view('superadmin.dashboard', compact('tenants'));
+        $pendingTenants = Tenant::where('status', 'pending')->get();
+        $approvedTenants = Tenant::where('status', 'approved')->get();
+        $tenants = Tenant::all(); // Keep this for backward compatibility
+        return view('superadmin.dashboard', compact('pendingTenants', 'approvedTenants', 'tenants'));
     }
 
     public function create()
@@ -28,39 +30,94 @@ class SuperAdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:tenants',
             'subdomain' => 'required|string|unique:tenants',
-            'password' => 'required|min:8',
         ]);
 
         try {
-            DB::beginTransaction();
+            // Generate a unique tenant ID
+            $tenantId = strtolower(Str::random(8));
 
-            // Create tenant record
-            $tenant = Tenant::create([
+            // Create tenant record with pending status
+            $tenant = new Tenant([
+                'id' => $tenantId,
                 'name' => $request->name,
                 'email' => $request->email,
                 'subdomain' => $request->subdomain,
-                'database_name' => 'tenant_' . Str::slug($request->subdomain),
+                'status' => 'pending',
+                'data' => json_encode([
+                    'created_at' => now(),
+                ])
             ]);
+            $tenant->save();
+
+            return redirect()->route('superadmin.tenants.index')
+                ->with('success', 'Tenant registration submitted for approval');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error creating tenant: ' . $e->getMessage());
+        }
+    }
+
+    public function approve(Tenant $tenant)
+    {
+        // Start transaction before any database operations
+        DB::beginTransaction();
+        
+        try {
+            $database = 'tenant_' . $tenant->id;
 
             // Create tenant database
-            $database = 'tenant_' . Str::slug($request->subdomain);
-            DB::statement("CREATE DATABASE {$database}");
+            DB::statement("CREATE DATABASE IF NOT EXISTS {$database}");
+
+            // Configure the database connection
+            config([
+                "database.connections.tenant_{$tenant->id}" => [
+                    'driver' => 'mysql',
+                    'url' => env('DATABASE_URL'),
+                    'host' => env('DB_HOST', '127.0.0.1'),
+                    'port' => env('DB_PORT', '3306'),
+                    'database' => $database,
+                    'username' => env('DB_USERNAME', 'forge'),
+                    'password' => env('DB_PASSWORD', ''),
+                    'unix_socket' => env('DB_SOCKET', ''),
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'prefix' => '',
+                    'prefix_indexes' => true,
+                    'strict' => true,
+                    'engine' => null,
+                ]
+            ]);
+
+            // Update tenant status and database info
+            $tenant->status = 'approved';
+            $tenant->data = array_merge(json_decode($tenant->data, true) ?? [], ['database' => $database]);
+            $tenant->save();
 
             // Run migrations for new tenant database
             Artisan::call('migrate', [
-                '--database' => $database,
+                '--database' => "tenant_{$tenant->id}",
                 '--path' => 'database/migrations/tenant',
                 '--force' => true
             ]);
 
+            // Commit the transaction if everything succeeded
             DB::commit();
 
             return redirect()->route('superadmin.tenants.index')
-                ->with('success', 'Tenant created successfully');
+                ->with('success', 'Tenant approved and database created successfully');
         } catch (\Exception $e) {
+            // Roll back the transaction if anything failed
             DB::rollBack();
-            return back()->with('error', 'Error creating tenant: ' . $e->getMessage());
+            return back()->with('error', 'Error approving tenant: ' . $e->getMessage());
         }
+    }
+
+    public function reject(Tenant $tenant)
+    {
+        $tenant->status = 'rejected';
+        $tenant->save();
+
+        return redirect()->route('superadmin.tenants.index')
+            ->with('success', 'Tenant registration rejected');
     }
 
     public function show(Tenant $tenant)
@@ -71,11 +128,17 @@ class SuperAdminController extends Controller
     public function destroy(Tenant $tenant)
     {
         try {
-            DB::statement("DROP DATABASE {$tenant->database_name}");
+            DB::beginTransaction();
+            
+            // Delete the tenant (this will trigger the delete event which handles database deletion)
             $tenant->delete();
+
+            DB::commit();
+
             return redirect()->route('superadmin.tenants.index')
                 ->with('success', 'Tenant deleted successfully');
         } catch (\Exception $e) {
+            DB::rollBack();
             return back()->with('error', 'Error deleting tenant: ' . $e->getMessage());
         }
     }

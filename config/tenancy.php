@@ -19,6 +19,7 @@ return [
     'central_domains' => [
         '127.0.0.1',
         'localhost',
+        'dineflow.test'
     ],
 
     /**
@@ -169,6 +170,15 @@ return [
         // Stancl\Tenancy\Features\TenantConfig::class, // https://tenancyforlaravel.com/docs/v3/features/tenant-config
         // Stancl\Tenancy\Features\CrossDomainRedirect::class, // https://tenancyforlaravel.com/docs/v3/features/cross-domain-redirect
         // Stancl\Tenancy\Features\ViteBundler::class,
+        Stancl\Tenancy\Features\CrossDomainRedirect::class,
+        Stancl\Tenancy\Features\UniversalRoutes::class,
+    ],
+
+    'middleware' => [
+        'web' => [
+            \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
+            \Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains::class,
+        ]
     ],
 
     /**

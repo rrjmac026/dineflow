@@ -41,6 +41,8 @@ use Illuminate\Support\Facades\Route;
         Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmin.')->group(function () {
             Route::get('/dashboard', [SuperAdminController::class, 'index'])->name('dashboard');
             Route::resource('tenants', SuperAdminController::class);
+            Route::post('tenants/{tenant}/approve', [SuperAdminController::class, 'approve'])->name('tenants.approve');
+            Route::post('tenants/{tenant}/reject', [SuperAdminController::class, 'reject'])->name('tenants.reject');
         });
 
         Route::middleware(['auth', 'customer'])->group(function () {

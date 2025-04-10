@@ -2,12 +2,6 @@
 
 @section('content')
 <div class="p-6">
-    <!-- Welcome Section -->
-    <div class="mb-8">
-        <h2 class="text-3xl font-bold text-gray-800">Welcome, {{ auth()->user()->name }}</h2>
-        <p class="text-gray-600">Central Dashboard Management</p>
-    </div>
-
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
@@ -23,12 +17,11 @@
                 </div>
             </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
             <div class="flex items-center">
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold text-gray-600">Active Tenants</h3>
-                    <p class="text-3xl font-bold text-gray-800">{{ $tenants->where('active', true)->count() }}</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $approvedTenants->count() }}</p>
                 </div>
                 <div class="text-green-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -37,12 +30,11 @@
                 </div>
             </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
             <div class="flex items-center">
                 <div class="flex-1">
-                    <h3 class="text-lg font-semibold text-gray-600">This Month</h3>
-                    <p class="text-3xl font-bold text-gray-800">{{ $tenants->where('created_at', '>=', now()->startOfMonth())->count() }}</p>
+                    <h3 class="text-lg font-semibold text-gray-600">Pending Approval</h3>
+                    <p class="text-3xl font-bold text-gray-800">{{ $pendingTenants->count() }}</p>
                 </div>
                 <div class="text-yellow-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -51,7 +43,6 @@
                 </div>
             </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
             <div class="flex items-center">
                 <div class="flex-1">
@@ -67,15 +58,61 @@
         </div>
     </div>
 
-    <!-- Recent Tenants Table -->
-    <div class="bg-white rounded-lg shadow-sm">
+    <!-- Pending Tenants Section -->
+    @if($pendingTenants->count() > 0)
+    <div class="bg-white rounded-lg shadow-sm mb-6">
         <div class="p-6 border-b border-gray-200">
-            <div class="flex justify-between items-center">
-                <h3 class="text-xl font-semibold text-gray-800">Recent Tenants</h3>
-                <a href="{{ route('superadmin.tenants.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
-                    Add New Tenant
-                </a>
-            </div>
+            <h3 class="text-xl font-semibold text-gray-800">Pending Approvals</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Business Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subdomain</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($pendingTenants as $tenant)
+                    <tr>
+                        <td class="px-6 py-4">{{ $tenant->name }}</td>
+                        <td class="px-6 py-4">{{ $tenant->email }}</td>
+                        <td class="px-6 py-4">{{ $tenant->subdomain }}.dineflow.test</td>
+                        <td class="px-6 py-4 flex space-x-2">
+                            <form action="{{ route('superadmin.tenants.approve', $tenant) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded">Approve</button>
+                            </form>
+                            <form action="{{ route('superadmin.tenants.reject', $tenant) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">No pending approvals</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+
+    <!-- Active Tenants Table -->
+    <div class="bg-white rounded-lg shadow-sm">
+        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-xl font-semibold text-gray-800">Active Tenants</h3>
+            <a href="{{ route('superadmin.tenants.create') }}" 
+               class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Create New Tenant
+            </a>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
@@ -89,7 +126,7 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($tenants->take(5) as $tenant)
+                    @forelse($approvedTenants as $tenant)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $tenant->name }}</div>
@@ -110,23 +147,22 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <a href="{{ route('superadmin.tenants.show', $tenant) }}" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
-                            <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                            <form action="{{ route('superadmin.tenants.destroy', $tenant) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this tenant?')">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     @empty
                     <tr>
                         <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                            No tenants found. <a href="{{ route('superadmin.tenants.create') }}" class="text-blue-600 hover:text-blue-900">Create one now</a>
+                            No active tenants found
                         </td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
-        </div>
-        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
-            <a href="{{ route('superadmin.tenants.index') }}" class="text-sm font-medium text-blue-600 hover:text-blue-500">
-                View all tenants →
-            </a>
         </div>
     </div>
 </div>

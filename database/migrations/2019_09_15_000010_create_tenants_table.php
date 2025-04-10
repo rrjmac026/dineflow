@@ -17,9 +17,10 @@ class CreateTenantsTable extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->string('id')->primary();
-
-            // your custom columns may go here
-
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('subdomain')->unique();
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
             $table->json('data')->nullable();
         });
