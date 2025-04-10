@@ -28,10 +28,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Check if the logged-in user is a SuperAdmin
+        if (auth()->user()->role === 'superadmin') {
+            // Redirect the SuperAdmin to the central app dashboard
+            return redirect()->route('superadmin.dashboard');
+        }
+
+        // Handle other role-based redirects
         if (auth()->user()->role === 'customer') {
             return redirect()->intended(route('customer.dashboard'));
         }
 
+        // Default redirect for other roles (admin, manager, staff, etc.)
         return redirect()->intended(route('dashboard'));
     }
 
@@ -49,3 +57,4 @@ class AuthenticatedSessionController extends Controller
         return redirect('/');
     }
 }
+

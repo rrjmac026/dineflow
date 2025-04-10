@@ -11,6 +11,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerManagementController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use Illuminate\Support\Facades\Route;
 
         Route::get('/', function () {
@@ -37,6 +38,10 @@ use Illuminate\Support\Facades\Route;
             Route::resource('users', UserManagementController::class);
         });
 
+        Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmin.')->group(function () {
+            Route::get('/dashboard', [SuperAdminController::class, 'index'])->name('dashboard');
+            Route::resource('tenants', SuperAdminController::class);
+        });
 
         Route::middleware(['auth', 'customer'])->group(function () {
             // Customer Routes
