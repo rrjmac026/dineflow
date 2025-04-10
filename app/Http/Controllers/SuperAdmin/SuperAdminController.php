@@ -58,54 +58,29 @@ class SuperAdminController extends Controller
 
     public function approve(Tenant $tenant)
     {
-        // Start transaction before any database operations
         DB::beginTransaction();
-        
         try {
-            $database = 'tenant_' . $tenant->id;
-
-            // Create tenant database
-            DB::statement("CREATE DATABASE IF NOT EXISTS {$database}");
-
-            // Configure the database connection
-            config([
-                "database.connections.tenant_{$tenant->id}" => [
-                    'driver' => 'mysql',
-                    'url' => env('DATABASE_URL'),
-                    'host' => env('DB_HOST', '127.0.0.1'),
-                    'port' => env('DB_PORT', '3306'),
-                    'database' => $database,
-                    'username' => env('DB_USERNAME', 'forge'),
-                    'password' => env('DB_PASSWORD', ''),
-                    'unix_socket' => env('DB_SOCKET', ''),
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'prefix' => '',
-                    'prefix_indexes' => true,
-                    'strict' => true,
-                    'engine' => null,
-                ]
+            // Create domain for tenant
+            $tenant->domains()->create([
+                'domain' => $tenant->subdomain . '.dineflow.test'
             ]);
 
-            // Update tenant status and database info
+            // Update tenant status
             $tenant->status = 'approved';
-            $tenant->data = array_merge(json_decode($tenant->data, true) ?? [], ['database' => $database]);
             $tenant->save();
 
-            // Run migrations for new tenant database
-            Artisan::call('migrate', [
-                '--database' => "tenant_{$tenant->id}",
-                '--path' => 'database/migrations/tenant',
-                '--force' => true
-            ]);
+            // Run migrations within tenant context
+            $tenant->run(function () {
+                Artisan::call('migrate', [
+                    '--path' => 'database/migrations/tenant',
+                    '--force' => true
+                ]);
+            });
 
-            // Commit the transaction if everything succeeded
             DB::commit();
-
             return redirect()->route('superadmin.tenants.index')
                 ->with('success', 'Tenant approved and database created successfully');
         } catch (\Exception $e) {
-            // Roll back the transaction if anything failed
             DB::rollBack();
             return back()->with('error', 'Error approving tenant: ' . $e->getMessage());
         }
@@ -128,13 +103,12 @@ class SuperAdminController extends Controller
     public function destroy(Tenant $tenant)
     {
         try {
+            // Let the package handle deletion
             $tenant->delete();
             return redirect()->route('superadmin.tenants.index')
                 ->with('success', 'Tenant deleted successfully');
         } catch (\Exception $e) {
-            \Log::error('Tenant deletion error: ' . $e->getMessage());
-            return redirect()->route('superadmin.tenants.index')
-                ->with('error', 'Error deleting tenant. Please try again.');
+            return back()->with('error', 'Error deleting tenant: ' . $e->getMessage());
         }
     }
 }
