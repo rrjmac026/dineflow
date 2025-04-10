@@ -43,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
+        <!-- <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
             <div class="flex items-center">
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold text-gray-600">Total Revenue</h3>
@@ -55,7 +55,7 @@
                     </svg>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <!-- Pending Tenants Section -->

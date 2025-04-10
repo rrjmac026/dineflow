@@ -128,18 +128,13 @@ class SuperAdminController extends Controller
     public function destroy(Tenant $tenant)
     {
         try {
-            DB::beginTransaction();
-            
-            // Delete the tenant (this will trigger the delete event which handles database deletion)
             $tenant->delete();
-
-            DB::commit();
-
             return redirect()->route('superadmin.tenants.index')
                 ->with('success', 'Tenant deleted successfully');
         } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Error deleting tenant: ' . $e->getMessage());
+            \Log::error('Tenant deletion error: ' . $e->getMessage());
+            return redirect()->route('superadmin.tenants.index')
+                ->with('error', 'Error deleting tenant. Please try again.');
         }
     }
 }
