@@ -30,7 +30,7 @@
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Database Name</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $tenant->database_name }}</dd>
+                            <dd class="mt-1 text-sm text-gray-900">tenant{{ $tenant->id }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Created At</dt>

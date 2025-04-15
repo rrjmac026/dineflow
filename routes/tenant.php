@@ -20,6 +20,9 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
+    // Include auth routes for tenant
+    require __DIR__.'/auth.php';
+    
     // Tenant home page
     Route::get('/', function () {
         return view('tenant.welcome');

@@ -35,12 +35,12 @@ class DatabaseSeeder extends Seeder
         //     'role' => 'admin',
         // ]);
 
-        // User::factory()->create([
-        //     'name' => 'Rey Rameses Jude III S. Macalutas',
-        //     'email' => '1901102366@student.buksu.edu.ph',
-        //     'password' => bcrypt('password'),
-        //     'role' => 'admin',
-        // ]);
+        User::factory()->create([
+            'name' => 'Rey Rameses Jude III S. Macalutas',
+            'email' => '1901102366@student.buksu.edu.ph',
+            'password' => bcrypt('password'),
+            'role' => 'admin',
+        ]);
 
         // User::factory()->create([
         //     'name' => 'Manager',
@@ -70,12 +70,12 @@ class DatabaseSeeder extends Seeder
         //     'role' => 'customer',
         // ]);
 
-        User::factory()->create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@superadmin.com',
-            'password' => bcrypt('password'), 
-            'role' => 'superadmin',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Super Admin',
+        //     'email' => 'superadmin@superadmin.com',
+        //     'password' => bcrypt('password'), 
+        //     'role' => 'superadmin',
+        // ]);
 
     }
 }

@@ -65,18 +65,22 @@ class SuperAdminController extends Controller
                 'domain' => $tenant->subdomain . '.dineflow.test'
             ]);
 
-            // Update tenant status and save database name in data
+            // Update tenant status and set database name
             $tenant->status = 'approved';
+            $databaseName = 'tenant' . $tenant->id; 
             $tenant->data = json_encode([
                 'created_at' => now(),
-                'database' => 'tenant' . $tenant->id  // Match package's naming convention
+                'database' => $databaseName
             ]);
             $tenant->save();
 
-            // Run migrations within tenant context
+            // Run migrations within tenant context with cache tables
             $tenant->run(function () {
                 Artisan::call('migrate', [
-                    '--path' => 'database/migrations/tenant',
+                    '--path' => [
+                        'database/migrations/tenant',
+                        'database/migrations/tenant/0001_01_01_000001_create_cache_tables.php'
+                    ],
                     '--force' => true
                 ]);
             });

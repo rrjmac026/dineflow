@@ -25,22 +25,27 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
+        $user = Auth::user();
 
-        // Check if the logged-in user is a SuperAdmin
-        if (auth()->user()->role === 'superadmin') {
-            // Redirect the SuperAdmin to the central app dashboard
+        if (tenant()) {
+            $tenantDomain = tenant()->domains()->first()->domain;
+            $baseUrl = 'http://' . $tenantDomain;
+
+            if ($user->role === 'customer') {
+                return redirect()->to($baseUrl . route('customer.dashboard', [], false));
+            }
+            if ($user->role === 'admin') {
+                return redirect()->to($baseUrl . '/admin/dashboard');
+            }
+        }
+
+        // Handle central app redirects
+        if ($user->role === 'superadmin') {
             return redirect()->route('superadmin.dashboard');
         }
 
-        // Handle other role-based redirects
-        if (auth()->user()->role === 'customer') {
-            return redirect()->intended(route('customer.dashboard'));
-        }
-
-        // Default redirect for other roles (admin, manager, staff, etc.)
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended('/dashboard');
     }
 
     /**
