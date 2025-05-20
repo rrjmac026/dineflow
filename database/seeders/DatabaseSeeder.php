@@ -56,12 +56,12 @@ class DatabaseSeeder extends Seeder
         //     'role' => 'staff',
         // ]);
 
-        // User::factory()->create([
-        //     'name' => 'Customer 1',
-        //     'email' => 'customer@customer.com',
-        //     'password' => bcrypt('password'), 
-        //     'role' => 'customer', 
-        // ]);
+        User::factory()->create([
+            'name' => 'Customer 1',
+            'email' => 'customer@customer.com',
+            'password' => bcrypt('password'), 
+            'role' => 'customer', 
+        ]);
 
         // User::factory()->create([
         //     'name' => 'Customer 2',

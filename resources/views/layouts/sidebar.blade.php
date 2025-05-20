@@ -13,16 +13,19 @@
         x-transition:leave="transform transition-transform duration-300"
         x-transition:leave-start="translate-x-0"
         x-transition:leave-end="-translate-x-full"
-        class="fixed top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-gray-800 dark:to-gray-900 border-r border-amber-200/50 dark:border-amber-800/50 shadow-xl z-40 overflow-y-auto">
+        class="fixed top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-gray-800 dark:to-gray-900 border-r border-amber-200/50 dark:border-amber-800/50 shadow-xl z-40 flex flex-col">
         
-        @if(auth()->user()->role === 'customer')
-            @include('layouts.sidebar-customer')
-        @else
-            @include('layouts.sidebar-admin')
-        @endif
+        <!-- Main content wrapper with scrolling -->
+        <div class="flex-1 overflow-y-auto">
+            @if(auth()->user()->role === 'customer')
+                @include('layouts.sidebar-customer')
+            @else
+                @include('layouts.sidebar-admin')
+            @endif
+        </div>
 
-        <!-- Footer -->
-        <div class="absolute bottom-0 left-0 right-0 p-4">
+        <!-- Footer (not affected by scroll) -->
+        <div class="p-4 flex-shrink-0">
             <div class="p-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg">
                 <div class="flex items-center justify-center gap-2">
                     <i class="fas fa-utensils"></i>
