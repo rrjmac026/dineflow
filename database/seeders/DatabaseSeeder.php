@@ -71,10 +71,10 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         User::factory()->create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@superadmin.com',
-            'password' => bcrypt('password'), 
-            'role' => 'superadmin',
+            'name' => env('LANDLORD_USER_NAME'),
+            'email' => env('LANDLORD_USER_EMAIL'),
+            'role' => env('LANDLORD_USER_ROLE'),
+            'password' => bcrypt(env('LANDLORD_USER_PASSWORD')),
         ]);
 
         User::factory()->create([

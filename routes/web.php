@@ -23,13 +23,25 @@ use App\Http\Controllers\SuperAdmin\RegisterController as SuperAdminRegisterCont
     });
 
     Route::prefix('superadmin')->group(function () {
+    // Public routes (no auth)
         Route::get('/login', [SuperAdminLoginController::class, 'showLoginForm'])->name('superadmin.login');
         Route::post('/login', [SuperAdminLoginController::class, 'login']);
-        Route::post('/logout', [SuperAdminLoginController::class, 'logout'])->name('superadmin.logout');
-
         Route::get('/register', [SuperAdminRegisterController::class, 'showRegistrationForm'])->name('superadmin.register');
         Route::post('/register', [SuperAdminRegisterController::class, 'register']);
+        Route::get('/welcome', function () {
+            return view('superadmin/welcome');
+        });
+        
+
+        // Protected routes (auth + superadmin role)
+        Route::middleware(['auth', 'role:superadmin'])->group(function () {
+            Route::post('/logout', [SuperAdminLoginController::class, 'logout'])->name('superadmin.logout');
+            Route::get('/dashboard', fn () => view('superadmin.dashboard'))->name('superadmin.dashboard');
+            
+        });
     });
+
+
 
 
 
