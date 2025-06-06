@@ -101,22 +101,22 @@
     </div>
 
     <!-- Reports -->
-    <div class="mb-6">
-        <span class="px-3 text-xs font-semibold text-amber-800 dark:text-amber-400 uppercase tracking-wider">
-            Reports
-        </span>
-        <div class="mt-2 space-y-1">
-            {{-- Show Reports link only to admin --}}
-            @if(auth()->user()->role === 'admin')
-            <a href="{{ route('reports.index') }}" 
-               class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 
-               {{ request()->routeIs('reports.*') ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' : 'text-amber-900 dark:text-amber-100 hover:bg-amber-500/10 dark:hover:bg-amber-500/10' }}">
-                <i class="fas fa-chart-bar w-5 h-5"></i>
-                <span>Reports</span>
-            </a>
-            @endif
+    {{-- Show Reports link only to admin --}}
+    @if(auth()->user()->role === 'admin')
+        <div class="mb-6">
+            <span class="px-3 text-xs font-semibold text-amber-800 dark:text-amber-400 uppercase tracking-wider">
+                Reports
+            </span>
+            <div class="mt-2 space-y-1">
+                <a href="{{ route('reports.index') }}" 
+                class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 
+                {{ request()->routeIs('reports.*') ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' : 'text-amber-900 dark:text-amber-100 hover:bg-amber-500/10 dark:hover:bg-amber-500/10' }}">
+                    <i class="fas fa-chart-bar w-5 h-5"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
         </div>
-    </div>
+     @endif
 
     <script>
         function confirmDelete(formId) {

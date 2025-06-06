@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +13,77 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+      
+        // User::factory()->create([
+        //     'name' => 'Denesse Canque',
+        //     'email' => '1901102151@student.buksu.edu.ph',
+        //     'password' => bcrypt('password'),
+        //     'role' => 'admin',
+        // ]);
+
+        // User::factory()->create([
+        //     'name' => 'Jessa Gallardo',
+        //     'email' => '2201108663@student.buksu.edu.ph',
+        //     'password' => bcrypt('password'),
+        //     'role' => 'admin',
+        // ]);
+
+        // User::factory()->create([
+        //     'name' => 'maria Clarizza Onal',
+        //     'email' => '2201103921@student.buksu.edu.ph',
+        //     'password' => bcrypt('password'),
+        //     'role' => 'admin',
+        // ]);
+
+        // User::factory()->create([
+        //     'name' => 'Rey Rameses Jude III S. Macalutas',
+        //     'email' => '1901102366@student.buksu.edu.ph',
+        //     'password' => bcrypt('password'),
+        //     'role' => 'admin',
+        // ]);
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Manager',
+            'email' => 'manager@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'manager',
         ]);
+
+        User::factory()->create([
+            'name' => 'Staff',
+            'email' => 'staff@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'staff',
+        ]);
+
+        User::factory()->create([
+            'name' => 'Customer 1',
+            'email' => 'customer@customer.com',
+            'password' => bcrypt('password'), 
+            'role' => 'customer', 
+        ]);
+
+        // User::factory()->create([
+        //     'name' => 'Customer 2',
+        //     'email' => 'customer2@customer.com',
+        //     'password' => bcrypt('password'), 
+        //     'role' => 'customer',
+        // ]);
+
+        User::factory()->create([
+            'name' => 'Super Admin',
+            'email' => 'superadmin@superadmin.com',
+            'password' => bcrypt('password'), 
+            'role' => 'superadmin',
+        ]);
+
+        User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
+            'password' => bcrypt('password'), 
+            'role' => 'admin',
+        ]);
+
     }
 }
+

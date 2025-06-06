@@ -41,10 +41,7 @@
                          x-transition:enter-end="opacity-100 scale-100"
                          class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 border border-gray-100 dark:border-gray-700">
                         <!-- Profile -->
-                        <a href="{{ route('profile.edit') }}" 
-                           class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <i class="fas fa-user mr-2"></i> Profile
-                        </a>
+                        
 
                         <!-- Dark Mode Toggle -->
                         <button @click="$store.darkMode.toggle()"
