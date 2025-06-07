@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\TenantApprovalMail;
+use App\Mail\TenantRejectionMail;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 
@@ -67,27 +71,42 @@ class SuperAdminController extends Controller
         DB::beginTransaction();
 
         try {
-            // Create domain with correct format using tenant's subdomain
+            // Generate admin password with DINEFLOW prefix and 6 random digits
+            $password = 'DINEFLOW' . str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            
+            // Create domain
             $tenant->domains()->create([
                 'domain' => $tenant->subdomain . '.dineflow.com'
             ]);
-            
-            // Update status using enum string
+
             $tenant->status = 'approved';
             $tenant->expires_at = now()->addDays(30);
             $tenant->save();
 
-            // Run migrations
-            $tenant->run(function () {
+            // Run migrations and create admin user
+            $tenant->run(function () use ($tenant, $password) {
                 Artisan::call('migrate', [
                     '--path' => 'database/migrations/tenant',
                     '--force' => true
                 ]);
+
+                // Create admin user in tenant database
+                DB::connection('tenant')->table('users')->insert([
+                    'name' => $tenant->name,
+                    'email' => $tenant->admin_email,
+                    'password' => Hash::make($password),
+                    'role' => 'admin',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
             });
+
+            // Send approval email with credentials
+            Mail::to($tenant->admin_email)->send(new TenantApprovalMail($tenant, $password));
 
             DB::commit();
             return redirect()->route('superadmin.tenants.index')
-                ->with('success', 'Tenant approved and database created successfully');
+                ->with('success', 'Tenant approved and credentials sent');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Error approving tenant: ' . $e->getMessage());
@@ -97,8 +116,11 @@ class SuperAdminController extends Controller
     public function reject(Tenant $tenant)
     {
         try {
-            $tenant->status = 'rejected';  // Use enum string instead of boolean
+            $tenant->status = 'rejected';
             $tenant->save();
+
+            // Send rejection email
+            Mail::to($tenant->admin_email)->send(new TenantRejectionMail($tenant));
 
             return redirect()->route('superadmin.tenants.index')
                 ->with('success', 'Tenant registration rejected');

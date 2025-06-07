@@ -4,6 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Request;
 
 class AppLayout extends Component
 {
@@ -12,6 +13,11 @@ class AppLayout extends Component
      */
     public function render(): View
     {
+        // Check if we're on a tenant domain
+        if (Request::getHost() !== config('app.domain')) {
+            return view('layouts.app');
+        }
+        
         return view('layouts.app');
     }
 }

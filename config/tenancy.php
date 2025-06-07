@@ -16,8 +16,15 @@ return [
      *
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
+    'asset_url' => env('ASSET_URL', null),
     'central_domains' => [
-        'dineflow.com'
+        'dineflow.com',
+        'localhost',
+        '127.0.0.1',
+    ],
+    'middleware' => [
+        'web',
+        \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
     ],
 
     /**

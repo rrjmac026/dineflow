@@ -16,6 +16,23 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.store('darkMode', {
+                    on: localStorage.getItem('darkMode') === 'true',
+                    toggle() {
+                        this.on = !this.on;
+                        localStorage.setItem('darkMode', this.on);
+                    }
+                })
+                
+                Alpine.store('sidebar', {
+                    isOpen: true,
+                    toggle() { this.isOpen = !this.isOpen }
+                })
+            })
+        </script>
 
         <style>
             [x-cloak] { display: none !important; }

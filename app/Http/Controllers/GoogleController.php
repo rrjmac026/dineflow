@@ -1,42 +1,53 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Exception;
 
 class GoogleController extends Controller
 {
     public function redirectToGoogle()
     {
-        return Socialite::driver('google')->redirect();
+        // Dynamically set redirect URL based on current tenant subdomain
+        $redirectUrl = request()->getSchemeAndHttpHost() . '/auth/google/callback';
+
+        return Socialite::driver('google')
+            ->redirectUrl($redirectUrl)
+            ->redirect();
     }
 
     public function handleGoogleCallback()
     {
         try {
-            $user = Socialite::driver('google')->user();
-            $finduser = User::where('email', $user->email)->first();
+            $redirectUrl = request()->getSchemeAndHttpHost() . '/auth/google/callback';
 
-            if ($finduser) {
-                Auth::login($finduser);
-                return redirect()->route('dashboard');
-            } else {
-                $newUser = User::create([
-                    'name' => $user->name,
-                    'email' => $user->email,
+            $googleUser = Socialite::driver('google')
+                ->redirectUrl($redirectUrl)
+                ->stateless() // prevents session state mismatch issues
+                ->user();
+
+            $user = User::firstOrCreate(
+                ['email' => $googleUser->email],
+                [
+                    'name' => $googleUser->name,
                     'password' => bcrypt('password123'),
-                    'role' => 'customer'
-                ]);
+                    'role' => 'customer',
+                ]
+            );
 
-                Auth::login($newUser);
-                return redirect()->route('customer.dashboard');
-            }
+            Auth::login($user);
+
+            return $user->role === 'customer'
+                ? redirect()->route('customer.dashboard')
+                : redirect()->route('dashboard');
+
         } catch (Exception $e) {
+            Log::error('Google login failed: ' . $e->getMessage());
             return redirect()->route('login')->with('error', 'Google login failed. Please try again.');
         }
     }

@@ -21,27 +21,30 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-
-            // Only allow superadmin here
-            if ($user->role !== 'superadmin') {
-                Auth::logout();
-                return back()->withErrors([
-                    'email' => 'Access denied. You do not have permission to log in here.'
-                ]);
-            }
-
             $request->session()->regenerate();
-
-            // Redirect superadmin to dashboard (or wherever)
-            return redirect()->intended('superadmin/dashboard');
+            
+            // Get authenticated user
+            $user = Auth::user();
+            
+            // Redirect based on role
+            switch ($user->role) {
+                case 'admin':
+                    return redirect()->intended('dashboard');
+                case 'manager':
+                    return redirect()->intended('dashboard');
+                case 'staff':
+                    return redirect()->intended('dashboard');
+                case 'customer':
+                    return redirect()->intended('customer/dashboard');
+                default:
+                    return redirect()->intended('dashboard');
+            }
         }
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
     }
-
 
     public function logout(Request $request)
     {
