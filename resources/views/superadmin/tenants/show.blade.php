@@ -26,7 +26,7 @@
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Subdomain</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $tenant->subdomain }}.dineflow.test</dd>
+                            <dd class="mt-1 text-sm text-gray-900">{{ $tenant->subdomain }}.dineflow.com</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Database Name</dt>
@@ -44,7 +44,7 @@
                 <h3 class="text-lg font-semibold mb-4">Actions</h3>
                 <div class="bg-gray-50 p-4 rounded-lg">
                     <div class="space-y-4">
-                        <a href="https://{{ $tenant->subdomain }}.dineflow.test" 
+                        <a href="http://{{ $tenant->subdomain }}.dineflow.com:8000/welcome" 
                            target="_blank"
                            class="block w-full bg-blue-500 hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded">
                             Visit Tenant Site

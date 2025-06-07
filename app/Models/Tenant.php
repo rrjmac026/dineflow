@@ -2,62 +2,110 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
-use Illuminate\Support\Facades\DB;
 
 class Tenant extends BaseTenant implements TenantWithDatabase
 {
-    use HasDatabase, HasDomains;
+    use HasFactory, HasDatabase, HasDomains;
 
-    public $incrementing = false;
     protected $keyType = 'string';
+    public $incrementing = false;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->id = Str::uuid()->toString();
+        });
+    }
 
     protected $fillable = [
         'id',
         'name',
-        'email',
+        'admin_email',
         'subdomain',
+        'plan',
+        'status',
+        'expires_at',
         'data'
     ];
 
     protected $casts = [
-        'data' => 'array'
+        'data' => 'array',
+        'is_active' => 'boolean',
+        'expires_at' => 'datetime',
     ];
+
+    /**
+     * Get all users that belong to this tenant.
+     */
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    /**
+     * Check if the tenant is on a specific plan.
+     */
+    public function onPlan(string $plan): bool
+    {
+        return $this->plan === $plan;
+    }
+
+    /**
+     * Check if the subscription is active and not expired.
+     */
+    public function isSubscribed(): bool
+    {
+        return $this->is_active && (! $this->expires_at || $this->expires_at->isFuture());
+    }
+
+    /**
+     * Accessor for logo URL (if stored publicly).
+     */
+    public function getLogoUrlAttribute()
+    {
+        return $this->logo_path ? asset('storage/' . $this->logo_path) : null;
+    }
 
     public static function getCustomColumns(): array
     {
         return [
             'id',
             'name',
-            'email',
+            'admin_email',
             'subdomain',
+            'plan',
             'status',
+            'expires_at',
         ];
     }
 
-    protected static function booted()
+    public function setCustomAttribute($key, $value)
     {
-        static::deleting(function ($tenant) {
-            // Only attempt database deletion if tenant was approved
-            if ($tenant->status === 'approved') {
-                try {
-                    $database = 'tenant_' . $tenant->id;
-                    // Check if database exists before attempting to delete
-                    $exists = DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$database]);
-                    
-                    if (!empty($exists)) {
-                        DB::statement("DROP DATABASE `{$database}`");
-                    }
-                } catch (\Exception $e) {
-                    \Log::warning("Could not delete tenant database: {$e->getMessage()}");
-                }
-            }
+        if (in_array($key, self::getCustomColumns())) {
+            $this->attributes[$key] = $value;
+        } else {
+            $data = $this->data ?? [];
+            $data[$key] = $value;
+            $this->data = $data;
+        }
+    }
 
-            // Delete associated domains
-            $tenant->domains()->delete();
-        });
+    public function getCustomAttribute($key)
+    {
+        if (in_array($key, self::getCustomColumns())) {
+            return $this->attributes[$key] ?? null;
+        }
+        
+        return $this->data[$key] ?? null;
     }
 }

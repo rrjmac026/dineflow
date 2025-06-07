@@ -82,12 +82,12 @@
                 </p>
                 
                     <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                        <a href="{{ route('login') }}" 
+                        <a href="{{ route('superadmin.login') }}" 
                            class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105">
                             <i class="fas fa-utensils mr-2"></i>
                             Start Ordering
                         </a>
-                        <a href="{{ route('register') }}" 
+                        <a href="{{ route('superadmin.register') }}" 
                            class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105">
                             <i class="fas fa-user-plus mr-2"></i>
                             Join Now

@@ -38,7 +38,7 @@
         <div class="glass-effect w-full max-w-md p-6 sm:p-8 rounded-xl">
             <!-- Logo and Welcome Section -->
             <div class="flex flex-col items-center mb-8">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-red-500 to-purple-500 rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-yellow-500 to-red-500 rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg">
                     <i class="fas fa-user-shield text-2xl sm:text-3xl text-white"></i>
                 </div>
                 <h2 class="text-2xl font-bold text-white tracking-tight">Super Admin Login</h2>
@@ -51,10 +51,11 @@
                 <!-- Email -->
                 <div>
                     <label class="block text-sm font-medium text-white/90 mb-1" for="email">Email</label>
-                    <input class="w-full px-3 py-2 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                    <input class="w-full px-3 py-2 bg-white text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
                            id="email" 
                            type="email" 
                            name="email" 
+                           placeholder="Enter your email"
                            required 
                            autofocus>
                 </div>
@@ -62,10 +63,11 @@
                 <!-- Password -->
                 <div>
                     <label class="block text-sm font-medium text-white/90 mb-1" for="password">Password</label>
-                    <input class="w-full px-3 py-2 bg-white/10 border border-white/20 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                    <input class="w-full px-3 py-2 bg-white text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
                            id="password" 
                            type="password" 
                            name="password" 
+                           placeholder="Enter your password"
                            required>
                 </div>
 
@@ -79,7 +81,7 @@
 
                 <!-- Submit Button -->
                 <button type="submit" 
-                        class="w-full px-4 py-3 bg-gradient-to-r from-red-500 to-purple-500 hover:from-red-600 hover:to-purple-600 text-white font-medium rounded-xl transition-all duration-200 transform hover:scale-[1.02] focus:scale-[.99] focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                        class="w-full px-4 py-3 bg-gradient-to-r from-yellow-500 to-red-500 hover:from-yellow-600 hover:to-red-600 text-white font-medium rounded-xl transition-all duration-200 transform hover:scale-[1.02] focus:scale-[.99] focus:ring-2 focus:ring-yellow-500">
                     Sign in
                 </button>
             </form>

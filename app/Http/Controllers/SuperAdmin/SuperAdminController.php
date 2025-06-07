@@ -14,11 +14,22 @@ class SuperAdminController extends Controller
 {
     public function index()
     {
-        $pendingTenants = Tenant::where('status', 'pending')->get();
+        $tenants = Tenant::all();
         $approvedTenants = Tenant::where('status', 'approved')->get();
-        $tenants = Tenant::all(); // Keep this for backward compatibility
-        return view('superadmin.dashboard', compact('pendingTenants', 'approvedTenants', 'tenants'));
+        $pendingTenants = Tenant::where('status', 'pending')->get();
+
+        return view('superadmin.tenants.index', compact('tenants', 'approvedTenants', 'pendingTenants'));
     }
+
+    public function dashboard()
+    {
+        $tenants = Tenant::all();
+        $approvedTenants = Tenant::where('status', 'approved')->get();
+        $pendingTenants = Tenant::where('status', 'pending')->get();
+
+        return view('superadmin.dashboard', compact('tenants', 'approvedTenants', 'pendingTenants'));
+    }
+
 
     public function create()
     {
@@ -29,26 +40,20 @@ class SuperAdminController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:tenants',
-            'subdomain' => 'required|string|unique:tenants',
+            'admin_email' => 'required|email|unique:tenants,admin_email',
+            'subdomain' => 'required|string|unique:tenants,subdomain',
+            'plan' => 'required|in:free,pro',
         ]);
 
         try {
-            // Generate a unique tenant ID
-            $tenantId = strtolower(Str::random(8));
-
-            // Create tenant record with pending status
-            $tenant = new Tenant([
-                'id' => $tenantId,
+            $tenant = Tenant::create([
                 'name' => $request->name,
-                'email' => $request->email,
-                'subdomain' => $request->subdomain,
-                'status' => 'pending',
-                'data' => json_encode([
-                    'created_at' => now(),
-                ])
+                'admin_email' => $request->admin_email,
+                'subdomain' => strtolower($request->subdomain),
+                'plan' => $request->plan,
+                'status' => 'pending',  // Use enum string instead of boolean
+                'expires_at' => null,
             ]);
-            $tenant->save();
 
             return redirect()->route('superadmin.tenants.index')
                 ->with('success', 'Tenant registration submitted for approval');
@@ -60,28 +65,22 @@ class SuperAdminController extends Controller
     public function approve(Tenant $tenant)
     {
         DB::beginTransaction();
-        try {
-            // Create domain for tenant
-            $tenant->domains()->create([
-                'domain' => $tenant->subdomain . '.dineflow.com:8000'
-            ]);
 
-            // Update tenant status and set database name
-            $tenant->status = 'approved';
-            $databaseName = 'tenant' . $tenant->id; 
-            $tenant->data = json_encode([
-                'created_at' => now(),
-                'database' => $databaseName
+        try {
+            // Create domain with correct format using tenant's subdomain
+            $tenant->domains()->create([
+                'domain' => $tenant->subdomain . '.dineflow.com'
             ]);
+            
+            // Update status using enum string
+            $tenant->status = 'approved';
+            $tenant->expires_at = now()->addDays(30);
             $tenant->save();
 
-            // Run migrations within tenant context with cache tables
+            // Run migrations
             $tenant->run(function () {
                 Artisan::call('migrate', [
-                    '--path' => [
-                        'database/migrations/tenant',
-                        'database/migrations/tenant/0001_01_01_000001_create_cache_tables.php'
-                    ],
+                    '--path' => 'database/migrations/tenant',
                     '--force' => true
                 ]);
             });
@@ -97,11 +96,15 @@ class SuperAdminController extends Controller
 
     public function reject(Tenant $tenant)
     {
-        $tenant->status = 'rejected';
-        $tenant->save();
+        try {
+            $tenant->status = 'rejected';  // Use enum string instead of boolean
+            $tenant->save();
 
-        return redirect()->route('superadmin.tenants.index')
-            ->with('success', 'Tenant registration rejected');
+            return redirect()->route('superadmin.tenants.index')
+                ->with('success', 'Tenant registration rejected');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error rejecting tenant: ' . $e->getMessage());
+        }
     }
 
     public function show(Tenant $tenant)
@@ -112,8 +115,8 @@ class SuperAdminController extends Controller
     public function destroy(Tenant $tenant)
     {
         try {
-            // Let the package handle deletion
             $tenant->delete();
+
             return redirect()->route('superadmin.tenants.index')
                 ->with('success', 'Tenant deleted successfully');
         } catch (\Exception $e) {

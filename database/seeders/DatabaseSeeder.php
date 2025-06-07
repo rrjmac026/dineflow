@@ -42,26 +42,26 @@ class DatabaseSeeder extends Seeder
         //     'role' => 'admin',
         // ]);
 
-        User::factory()->create([
-            'name' => 'Manager',
-            'email' => 'manager@example.com',
-            'password' => bcrypt('password'),
-            'role' => 'manager',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Manager',
+        //     'email' => 'manager@example.com',
+        //     'password' => bcrypt('password'),
+        //     'role' => 'manager',
+        // ]);
 
-        User::factory()->create([
-            'name' => 'Staff',
-            'email' => 'staff@example.com',
-            'password' => bcrypt('password'),
-            'role' => 'staff',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Staff',
+        //     'email' => 'staff@example.com',
+        //     'password' => bcrypt('password'),
+        //     'role' => 'staff',
+        // ]);
 
-        User::factory()->create([
-            'name' => 'Customer 1',
-            'email' => 'customer@customer.com',
-            'password' => bcrypt('password'), 
-            'role' => 'customer', 
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Customer 1',
+        //     'email' => 'customer@customer.com',
+        //     'password' => bcrypt('password'), 
+        //     'role' => 'customer', 
+        // ]);
 
         // User::factory()->create([
         //     'name' => 'Customer 2',
@@ -77,12 +77,12 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt(env('LANDLORD_USER_PASSWORD')),
         ]);
 
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => bcrypt('password'), 
-            'role' => 'admin',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Admin',
+        //     'email' => 'admin@admin.com',
+        //     'password' => bcrypt('password'), 
+        //     'role' => 'admin',
+        // ]);
 
     }
 }

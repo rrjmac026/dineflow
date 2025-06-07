@@ -61,7 +61,7 @@
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
                                 <div class="border-t border-gray-100"></div>
-                                <form method="POST" action="{{ route('logout') }}">
+                                <form method="POST" action="{{ route('superadmin.logout') }}">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                                         Logout
