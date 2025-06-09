@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class SubscriptionMiddleware
+{
+    public function handle(Request $request, Closure $next): Response
+    {
+        $tenant = tenant(); // from stancl/tenancy
+
+        if ($tenant->subscription !== 'pro') {
+            abort(403, 'Access denied. Upgrade to Pro to access this feature.');
+        }
+
+        return $next($request);
+    }
+}

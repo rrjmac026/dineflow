@@ -61,7 +61,7 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subdomain</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Plan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subscription</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Admin Email</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                     </tr>
@@ -71,7 +71,7 @@
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $tenant->name }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $tenant->subdomain }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap capitalize">{{ $tenant->plan }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap capitalize">{{ $tenant->subscription }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $tenant->admin_email }}</td>
                         <td class="px-6 py-4 whitespace-nowrap space-x-2">
                             <form action="{{ route('superadmin.tenants.approve', $tenant) }}" method="POST" class="inline">
@@ -116,7 +116,7 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subdomain</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Plan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">subscription</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Expires At</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -127,7 +127,7 @@
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $tenant->name }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $tenant->subdomain }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap capitalize">{{ $tenant->plan }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap capitalize">{{ $tenant->subscription }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             {{ $tenant->expires_at ? $tenant->expires_at->format('Y-m-d') : 'N/A' }}
                         </td>

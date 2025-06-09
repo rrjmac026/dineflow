@@ -6,6 +6,8 @@
     <title>Super Admin Login - DineFlow</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/alpinejs" defer></script> <!-- ✅ ADD THIS -->
+
     <style>
         .bg-image {
             background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/background.jpg');
@@ -31,8 +33,48 @@
         }
     </style>
 </head>
+
 <body class="antialiased min-h-screen overflow-x-hidden">
     <div class="bg-image"></div>
+        @if (session('status'))
+            <div 
+                x-data="{ show: true }" 
+                x-show="show"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 translate-y-2"
+                x-init="setTimeout(() => show = false, 4000)"
+                class="fixed top-5 right-5 z-50 w-full max-w-sm mx-auto bg-green-600 text-white rounded-lg shadow-lg overflow-hidden"
+            >
+                <div class="flex items-start px-4 py-3">
+                    <!-- Icon -->
+                    <div class="flex-shrink-0 mt-0.5">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+
+                    <!-- Message -->
+                    <div class="ml-3 flex-1">
+                        <p class="text-sm font-medium leading-5">
+                            {{ session('status') }}
+                        </p>
+                    </div>
+
+                    <!-- Close button -->
+                    <button @click="show = false" class="ml-3 text-white hover:text-gray-100 focus:outline-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        @endif
+
+
     
     <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <div class="glass-effect w-full max-w-md p-6 sm:p-8 rounded-xl">

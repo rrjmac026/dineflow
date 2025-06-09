@@ -19,7 +19,7 @@ foreach (config('tenancy.central_domains') as $domain) {
             Route::get('/login', [SuperAdminLoginController::class, 'showLoginForm'])->name('superadmin.login');
             Route::post('/login', [SuperAdminLoginController::class, 'login']);
             Route::get('/register', [SuperAdminRegisterController::class, 'showRegistrationForm'])->name('superadmin.register');
-            Route::post('/register', [SuperAdminRegisterController::class, 'register']);
+            Route::post('/register', [SuperAdminRegisterController::class, 'registerTenant']);
             Route::get('/welcome', function () {
                 return view('superadmin/welcome');
             });

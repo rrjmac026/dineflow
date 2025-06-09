@@ -46,7 +46,7 @@ class SuperAdminController extends Controller
             'name' => 'required|string|max:255',
             'admin_email' => 'required|email|unique:tenants,admin_email',
             'subdomain' => 'required|string|unique:tenants,subdomain',
-            'plan' => 'required|in:free,pro',
+            'subscription' => 'required|in:free,pro',
         ]);
 
         try {
@@ -54,7 +54,7 @@ class SuperAdminController extends Controller
                 'name' => $request->name,
                 'admin_email' => $request->admin_email,
                 'subdomain' => strtolower($request->subdomain),
-                'plan' => $request->plan,
+                'subscription' => $request->subscription,
                 'status' => 'pending',  // Use enum string instead of boolean
                 'expires_at' => null,
             ]);

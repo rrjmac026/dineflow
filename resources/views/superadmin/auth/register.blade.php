@@ -69,10 +69,10 @@
                             </p>
                         </div>
 
-                        <!-- Plan -->
+                        <!-- subscription -->
                         <div>
-                            <label for="plan" class="block text-sm font-medium text-white mb-1">Choose Plan</label>
-                            <select id="plan" name="plan" required
+                            <label for="subscription" class="block text-sm font-medium text-white mb-1">Choose subscription</label>
+                            <select id="subscription" name="subscription" required
                                     class="w-full px-4 py-2.5 bg-white text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500">
                                 <option value="free">Free</option>
                                 <option value="pro">Pro</option>
@@ -97,25 +97,6 @@
                                    placeholder="admin@example.com"
                                    class="w-full px-4 py-2.5 bg-white text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500" />
                         </div>
-
-                        <!-- Password Grid -->
-                        <div class="grid gap-5 grid-cols-1 md:grid-cols-2">
-                            <!-- Admin Password -->
-                            <div>
-                                <label for="admin_password" class="block text-sm font-medium text-white mb-1">Password</label>
-                                <input id="admin_password" name="admin_password" type="password" required
-                                       placeholder="••••••••"
-                                       class="w-full px-4 py-2.5 bg-white text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500" />
-                            </div>
-
-                            <!-- Confirm Password -->
-                            <div>
-                                <label for="admin_password_confirmation" class="block text-sm font-medium text-white mb-1">Confirm</label>
-                                <input id="admin_password_confirmation" name="admin_password_confirmation" type="password" required
-                                       placeholder="••••••••"
-                                       class="w-full px-4 py-2.5 bg-white text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500" />
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -130,7 +111,7 @@
                 <!-- Submit Button -->
                 <button type="submit"
                         class="w-full px-4 py-3 bg-gradient-to-r from-yellow-500 to-red-500 hover:from-yellow-600 hover:to-red-600 text-white font-medium rounded-xl transition-all duration-200 transform hover:scale-[1.02] focus:scale-[.99] focus:ring-2 focus:ring-yellow-500 mt-6">
-                    Register Tenant
+                    Apply as a Tenant
                 </button>
             </form>
         </div>

@@ -19,7 +19,7 @@ class CreateTenantsTable extends Migration
             $table->uuid('id')->primary(); // UUID or string identifier for tenant
             $table->string('name'); // Add this line for tenant name
             $table->string('subdomain')->unique(); // Tenant's unique subdomain
-            $table->string('plan')->default('free'); // subscription plan (free, pro, etc.)
+            $table->string('subscription')->default('free'); // subscription plan (free, pro, etc.)
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending'); // approval status
             $table->timestamp('expires_at')->nullable();             // Expiration date
             $table->string('admin_email')->nullable(); // Add this line for admin email

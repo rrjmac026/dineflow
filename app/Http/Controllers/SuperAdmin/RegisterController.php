@@ -22,32 +22,27 @@ class RegisterController extends Controller
         $request->validate([
             'tenant_name' => 'required|string|max:255',
             'subdomain' => 'required|string|unique:tenants,subdomain',
-            'plan' => 'required|in:free,pro',
+            'subscription' => 'required|in:free,pro', // match your form field name
             'admin_name' => 'required|string|max:255',
-            'admin_email' => 'required|email|unique:users,email',
-            'admin_password' => 'required|string|min:8|confirmed',
+            'admin_email' => 'required|email|unique:tenants,admin_email',
         ]);
 
-        $tenant = Tenant::create([
-            'id' => Str::uuid()->toString(),
-            'name' => $request->tenant_name,
-            'subdomain' => $request->subdomain,
-            'plan' => $request->plan,
-            'status' => 'pending',
-            'expiration_date' => null,
+        try {
+            // Only create the Tenant record, don't create User or run migrations yet
+            Tenant::create([
+                'id' => Str::uuid()->toString(),
+                'name' => $request->tenant_name,
+                'subdomain' => strtolower($request->subdomain),
+                'admin_email' => $request->admin_email,
+                'subscription' => $request->subscription, // match form field
+                'status' => 'pending',
+                'expires_at' => null,
+            ]);
 
-        ]);
-
-        $adminUser = User::create([
-            'name' => $request->admin_name,
-            'email' => $request->admin_email,
-            'password' => Hash::make($request->admin_password),
-            'role' => 'admin',
-            'tenant_id' => $tenant->id,
-        ]);
-
-        // Optionally send notification email here
-
-        return redirect()->route('superadmin.tenants.index')->with('status', 'Tenant registration submitted and awaiting approval.');
+            return redirect()->route('superadmin.login')->with('status', 'Registration submitted. Please wait for approval.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error during registration: ' . $e->getMessage());
+        }
     }
+
 }

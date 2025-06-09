@@ -32,7 +32,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'name',
         'admin_email',
         'subdomain',
-        'plan',
+        'subscription',
         'status',
         'expires_at',
         'data'
@@ -55,10 +55,12 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     /**
      * Check if the tenant is on a specific plan.
      */
-    public function onPlan(string $plan): bool
+    public function hasSubscription(string $type): bool
     {
-        return $this->plan === $plan;
+        return $this->subscription === $type;
     }
+
+
 
     /**
      * Check if the subscription is active and not expired.
@@ -83,7 +85,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'name',
             'admin_email',
             'subdomain',
-            'plan',
+            'subscription',
             'status',
             'expires_at',
         ];
@@ -102,10 +104,20 @@ class Tenant extends BaseTenant implements TenantWithDatabase
 
     public function getCustomAttribute($key)
     {
-        if (in_array($key, self::getCustomColumns())) {
-            return $this->attributes[$key] ?? null;
+        if (!is_string($key) && !is_int($key)) {
+            return null;
         }
-        
-        return $this->data[$key] ?? null;
+
+        $data = $this->data;
+
+        if (!is_array($data)) {
+            return null;
+        }
+
+        return $data[$key] ?? null;
     }
+
+
+
+
 }
