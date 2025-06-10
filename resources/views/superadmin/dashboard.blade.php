@@ -142,19 +142,38 @@
                                 </span>
                             @endif
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap space-x-2">
-                            <a href="{{ route('superadmin.tenants.show', $tenant) }}" 
-                               class="text-blue-600 hover:text-blue-900">View</a>
-                            <form action="{{ route('superadmin.tenants.destroy', $tenant) }}" method="POST" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" 
-                                        class="text-red-600 hover:text-red-900 ml-2"
-                                        onclick="return confirm('Are you sure you want to delete this tenant?')">
-                                    Delete
-                                </button>
-                            </form>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center space-x-2">
+                                <!-- View Button -->
+                                <a href="{{ route('superadmin.tenants.show', $tenant) }}"
+                                class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 text-sm font-medium rounded hover:bg-blue-200 transition">
+                                    View
+                                </a>
+
+                                <!-- Upgrade Button (only if free) -->
+                                @if($tenant->subscription === 'free')
+                                    <form action="{{ route('superadmin.tenants.upgrade', $tenant) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        <button type="submit"
+                                                class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-800 text-sm font-medium rounded hover:bg-yellow-200 transition">
+                                            Upgrade to Pro
+                                        </button>
+                                    </form>
+                                @endif
+
+                                <!-- Delete Button -->
+                                <form action="{{ route('superadmin.tenants.destroy', $tenant) }}" method="POST" class="inline-block"
+                                    onsubmit="return confirm('Are you sure you want to delete this tenant?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 text-sm font-medium rounded hover:bg-red-200 transition">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
                         </td>
+
                     </tr>
                     @empty
                     <tr>

@@ -26,7 +26,7 @@
                     @foreach($tenants as $tenant)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $tenant->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $tenant->email }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $tenant->admin_email }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $tenant->subdomain }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $tenant->created_at->format('M d, Y') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">

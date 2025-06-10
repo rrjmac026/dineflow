@@ -38,7 +38,9 @@ foreach (config('tenancy.central_domains') as $domain) {
 
                 Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
                 Route::post('/logout', [SuperAdminLoginController::class, 'logout'])->name('superadmin.logout');
-                // Route::get('/dashboard', fn () => view('superadmin.dashboard'))->name('superadmin.dashboard');
+
+
+                Route::post('/tenants/{tenant}/upgrade', [SuperAdminController::class, 'upgrade'])->name('superadmin.tenants.upgrade');
                 
             });
         });

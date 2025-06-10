@@ -12,10 +12,11 @@ class SubscriptionMiddleware
     {
         $tenant = tenant();
 
-        if ($tenant->get('subscription') !== 'pro') {
+        if ($tenant?->subscription !== 'pro') {
             abort(403, 'Access denied. Upgrade to Pro to access this feature.');
         }
 
         return $next($request);
     }
+
 }

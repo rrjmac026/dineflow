@@ -66,6 +66,20 @@ class SuperAdminController extends Controller
         }
     }
 
+    public function upgrade(Tenant $tenant)
+    {
+        try {
+            $tenant->subscription = 'pro';
+            $tenant->expires_at = now()->addYear(); // or whatever your logic is
+            $tenant->save();
+
+            return redirect()->back()->with('success', 'Tenant upgraded to Pro successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error upgrading tenant: ' . $e->getMessage());
+        }
+    }
+
+
     public function approve(Tenant $tenant)
     {
         DB::beginTransaction();

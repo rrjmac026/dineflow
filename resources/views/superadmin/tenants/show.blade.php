@@ -22,7 +22,7 @@
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Email</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $tenant->email }}</dd>
+                            <dd class="mt-1 text-sm text-gray-900">{{ $tenant->admin_email }}</dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Subdomain</dt>
@@ -42,27 +42,39 @@
 
             <div>
                 <h3 class="text-lg font-semibold mb-4">Actions</h3>
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <div class="space-y-4">
-                        <a href="http://{{ $tenant->subdomain }}.dineflow.com:8000/welcome" 
-                           target="_blank"
-                           class="block w-full bg-blue-500 hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded">
-                            Visit Tenant Site
-                        </a>
-                        
-                        <form action="{{ route('superadmin.tenants.destroy', $tenant) }}" 
-                              method="POST"
-                              onsubmit="return confirm('Are you sure you want to delete this tenant? This action cannot be undone.');">
+                <div class="bg-gray-50 p-6 rounded-lg space-y-4">
+                    {{-- Upgrade Button --}}
+                    @if($tenant->subscription === 'free')
+                        <form action="{{ route('superadmin.tenants.upgrade', $tenant) }}" method="POST">
                             @csrf
-                            @method('DELETE')
                             <button type="submit" 
-                                    class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                Delete Tenant
+                                    class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg shadow">
+                                Upgrade to Pro
                             </button>
                         </form>
-                    </div>
+                    @endif
+
+                    {{-- Visit Site --}}
+                    <a href="http://{{ $tenant->subdomain }}.dineflow.com:8000/welcome" 
+                    target="_blank"
+                    class="block w-full text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow">
+                        Visit Tenant Site
+                    </a>
+
+                    {{-- Delete Tenant --}}
+                    <form action="{{ route('superadmin.tenants.destroy', $tenant) }}" 
+                        method="POST"
+                        onsubmit="return confirm('Are you sure you want to delete this tenant? This action cannot be undone.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" 
+                                class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow">
+                            Delete Tenant
+                        </button>
+                    </form>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

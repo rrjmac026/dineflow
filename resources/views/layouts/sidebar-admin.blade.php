@@ -102,7 +102,7 @@
 
     <!-- Reports -->
      {{-- Show Reports link only to admin --}}
-            @if(auth()->user()->role === 'admin' && tenant()->get('subscription') === 'pro')
+           @if(auth()->user()->role === 'admin' && tenant()->subscription === 'pro')
         <div class="mb-6">
             <span class="px-3 text-xs font-semibold text-amber-800 dark:text-amber-400 uppercase tracking-wider">
                 Reports
