@@ -10,9 +10,9 @@ class SubscriptionMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $tenant = tenant(); // from stancl/tenancy
+        $tenant = tenant();
 
-        if ($tenant->subscription !== 'pro') {
+        if ($tenant->get('subscription') !== 'pro') {
             abort(403, 'Access denied. Upgrade to Pro to access this feature.');
         }
 

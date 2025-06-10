@@ -18,7 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'staff' => \App\Http\Middleware\StaffMiddleware::class,
             'superadmin' => \App\Http\Middleware\SuperAdminMiddleware::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
-            'pro.plan' => \App\Http\Middleware\EnsureProPlan::class,
             'subscription.pro' => \App\Http\Middleware\SubscriptionMiddleware::class,
         ]);
     })

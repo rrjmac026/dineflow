@@ -60,11 +60,14 @@ Route::middleware([
         Route::resource('reservations', ReservationController::class);
         Route::resource('inventory', InventoryController::class);
         Route::resource('users', UserManagementController::class);
-        // Reports Routes
-        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-        Route::get('/reports/sales', [ReportController::class, 'salesReport'])->name('reports.sales');
-        Route::get('/reports/inventory', [ReportController::class, 'inventoryReport'])->name('reports.inventory');
-        Route::get('/reports/feedback', [ReportController::class, 'feedbackReport'])->name('reports.feedback');
+
+        Route::middleware(['subscription.pro'])->group(function () {
+            Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+            Route::get('/reports/sales', [ReportController::class, 'salesReport'])->name('reports.sales');
+            Route::get('/reports/inventory', [ReportController::class, 'inventoryReport'])->name('reports.inventory');
+            Route::get('/reports/feedback', [ReportController::class, 'feedbackReport'])->name('reports.feedback');
+        });
+
     });
     // staff
     
