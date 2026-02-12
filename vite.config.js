@@ -11,9 +11,18 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+
     server: {
-        hmr: {
-            host: 'localhost',
+        host: '0.0.0.0',
+        cors: {
+            origin: [
+                'http://dineflow.com:8000',
+                'http://tenant1.dineflow.com:8000'
+            ]
         },
-    },
+
+        hmr: {
+            host: 'dineflow.com'
+        }
+    }
 });

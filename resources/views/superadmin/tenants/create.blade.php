@@ -60,14 +60,14 @@
                         </div>
 
                         <div>
-                            <label for="plan" class="block text-sm font-medium text-gray-700">Subscription Plan</label>
-                            <select name="plan" id="plan" required
-                                    class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500"
-                                    onchange="toggleProOptions(this.value)">
-                                <option value="free" {{ old('plan') == 'free' ? 'selected' : '' }}>Free Plan</option>
-                                <option value="pro" {{ old('plan') == 'pro' ? 'selected' : '' }}>Pro Plan</option>
-                            </select>
-                            @error('plan')
+                            <label for="subscription" class="block text-sm font-medium text-gray-700">Subscription Plan</label>
+                            <select name="subscription" id="subscription" required
+        ...
+                                onchange="toggleProOptions(this.value)">
+                            <option value="free" {{ old('subscription') == 'free' ? 'selected' : '' }}>Free Plan</option>
+                            <option value="pro" {{ old('subscription') == 'pro' ? 'selected' : '' }}>Pro Plan</option>
+                        </select>
+                        @error('subscription')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>

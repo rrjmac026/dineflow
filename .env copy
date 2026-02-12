@@ -1,12 +1,17 @@
 APP_NAME=Laravel
 APP_ENV=local
-APP_KEY=
+APP_KEY=base64:0/zK8N/fSZKFPOGK9k9wU6vw8YGyEllTjYLI9IgweL4=
 APP_DEBUG=true
-APP_URL=http://localhost
+APP_URL=http://localhost:dineflow:8000
 
 APP_LOCALE=en
 APP_FALLBACK_LOCALE=en
 APP_FAKER_LOCALE=en_US
+
+LANDLORD_USER_NAME="Super Nigga"
+LANDLORD_USER_EMAIL="superadmin@example.com"
+LANDLORD_USER_ROLE="superadmin"
+LANDLORD_USER_PASSWORD="password"
 
 APP_MAINTENANCE_DRIVER=file
 # APP_MAINTENANCE_STORE=database

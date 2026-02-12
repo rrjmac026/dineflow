@@ -23,8 +23,9 @@ class MenuController extends Controller
 
     public function store(StoreMenuRequest $request)
     {
+        // ✅ Store in tenant-scoped public storage
         $imagePath = $request->file('image')->store('menu-images', 'public');
-        
+
         $menu = Menu::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -59,7 +60,6 @@ class MenuController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            // Delete old image
             if ($menu->image) {
                 Storage::disk('public')->delete($menu->image);
             }
@@ -78,7 +78,7 @@ class MenuController extends Controller
             if ($menu->image) {
                 Storage::disk('public')->delete($menu->image);
             }
-            
+
             $menu->delete();
             return redirect()->route('menu.index')
                 ->with('success', 'Menu item deleted successfully!');
@@ -94,10 +94,18 @@ class MenuController extends Controller
             'status' => ['required', 'in:available,unavailable']
         ]);
 
-        $menu->update([
-            'status' => $request->status
-        ]);
-        
+        $menu->update(['status' => $request->status]);
+
         return back()->with('success', 'Menu status updated successfully!');
+    }
+
+    // ✅ Add this helper — use in your views instead of Storage::url()
+    public function getImageUrl(Menu $menu): string
+    {
+        if (!$menu->image) {
+            return asset('images/placeholder.png');
+        }
+
+        return Storage::disk('public')->url($menu->image);
     }
 }
