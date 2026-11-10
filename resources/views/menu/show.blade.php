@@ -16,7 +16,7 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <img src="{{ Storage::url($menu->image) }}" alt="{{ $menu->name }}" 
+                            <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}"
                                  class="w-full h-96 object-cover rounded-lg shadow-md">
                         </div>
                         

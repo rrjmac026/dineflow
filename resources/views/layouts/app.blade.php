@@ -28,7 +28,7 @@
                 })
 
                 Alpine.store('sidebar', {
-                    isOpen: true,
+                    isOpen: window.innerWidth >= 1024,
                     toggle() { this.isOpen = !this.isOpen }
                 })
             })
@@ -77,7 +77,7 @@
 
                 <!-- Main Content -->
                 <div class="flex-1 min-w-0 transition-all duration-300"
-                     :class="{'lg:pl-64': $store.sidebar.isOpen}">
+                     :class="{'lg:pl-72': $store.sidebar.isOpen}">
                     <!-- Page Heading -->
                     @isset($header)
                         <header class="df-header">

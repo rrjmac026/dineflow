@@ -24,8 +24,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
                         @forelse($menu as $item)
                             <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
-                                {{-- ✅ This respects tenant storage --}}
-                                <img src="{{ asset('storage/' . tenant()->id . '/' . $item->image) }}" alt="{{ $item->name }}" 
+                                <img src="{{ $item->image_url }}" alt="{{ $item->name }}"
                                     class="w-full h-48 object-cover hover:opacity-90 transition-opacity duration-200">
                                 <div class="p-4 space-y-2">
                                     <div class="flex justify-between items-start">

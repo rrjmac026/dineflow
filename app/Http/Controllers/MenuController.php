@@ -98,14 +98,4 @@ class MenuController extends Controller
 
         return back()->with('success', 'Menu status updated successfully!');
     }
-
-    // ✅ Add this helper — use in your views instead of Storage::url()
-    public function getImageUrl(Menu $menu): string
-    {
-        if (!$menu->image) {
-            return asset('images/placeholder.png');
-        }
-
-        return Storage::disk('public')->url($menu->image);
-    }
 }

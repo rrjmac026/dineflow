@@ -33,6 +33,11 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    
+    public function admin(): static
+    {
+        return $this->state(fn () => ['role' => 'admin']);
+    }
 
     /**
      * Get the attributes that should be cast.

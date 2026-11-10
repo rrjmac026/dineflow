@@ -3,37 +3,34 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
-// Initialize Dark Mode store
+// Dark mode store (init() runs automatically on registration)
 Alpine.store('darkMode', {
     on: localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
+
     toggle() {
         this.on = !this.on;
         localStorage.theme = this.on ? 'dark' : 'light';
         this.updateDOM();
     },
+
     updateDOM() {
-        if (this.on) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
+        document.documentElement.classList.toggle('dark', this.on);
     },
+
     init() {
         this.updateDOM();
-    }
+    },
 });
 
-// Initialize Sidebar store
+// Sidebar store
 Alpine.store('sidebar', {
-    isOpen: window.innerWidth >= 1024, // Default open on desktop, closed on mobile
+    isOpen: window.innerWidth >= 1024, // open on desktop, closed on mobile
+
     toggle() {
         this.isOpen = !this.isOpen;
         localStorage.setItem('sidebar', this.isOpen);
-    }
+    },
 });
 
-// Start Alpine
+// Start Alpine (keep this last)
 Alpine.start();
-
-// Initialize dark mode on page load
-Alpine.store('darkMode').init();

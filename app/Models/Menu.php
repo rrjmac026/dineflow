@@ -17,4 +17,13 @@ class Menu extends Model
         'status',
         'image'
     ];
+
+    public function getImageUrlAttribute(): string
+    {
+        if (!$this->image) {
+            return global_asset('images/placeholder.png');
+        }
+
+        return url('/tenancy/assets/' . ltrim($this->image, '/'));
+    }
 }

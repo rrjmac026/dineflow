@@ -15,14 +15,11 @@ export default defineConfig({
     server: {
         host: '0.0.0.0',
         cors: {
-            origin: [
-                'http://dineflow.com:8000',
-                'http://tenant1.dineflow.com:8000'
-            ]
+            origin: /^https?:\/\/([a-z0-9-]+\.)*dineflow\.com(:\d+)?$/,
         },
 
         hmr: {
-            host: 'dineflow.com'
-        }
-    }
+            host: 'dineflow.com',
+        },
+    },
 });
