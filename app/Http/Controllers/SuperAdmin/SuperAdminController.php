@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-
+use App\Services\HostsFileService;
+use Illuminate\Support\Facades\Log;
 
 class SuperAdminController extends Controller
 {
@@ -51,12 +52,13 @@ class SuperAdminController extends Controller
 
         try {
             $tenant = Tenant::create([
-                'name' => $request->name,
-                'admin_email' => $request->admin_email,
-                'subdomain' => strtolower($request->subdomain),
+                'id'           => $this->generateTenantId($request->name),
+                'name'         => $request->name,
+                'admin_email'  => $request->admin_email,
+                'subdomain'    => strtolower($request->subdomain),
                 'subscription' => $request->subscription,
-                'status' => 'pending',  // Use enum string instead of boolean
-                'expires_at' => null,
+                'status'       => 'pending',
+                'expires_at'   => null,
             ]);
 
             return redirect()->route('superadmin.tenants.index')
@@ -115,10 +117,17 @@ class SuperAdminController extends Controller
                 ]);
             });
 
-            // Send approval email with credentials
             Mail::to($tenant->admin_email)->send(new TenantApprovalMail($tenant, $password));
 
             DB::commit();
+
+            // Write the subdomain to the hosts file (never blocks approval)
+            try {
+                (new HostsFileService())->addTenantEntry($tenant->subdomain, $tenant->name);
+            } catch (\Throwable $e) {
+                Log::warning("Tenant approved but hosts file could not be updated: " . $e->getMessage());
+            }
+
             return redirect()->route('superadmin.tenants.index')
                 ->with('success', 'Tenant approved and credentials sent');
         } catch (\Exception $e) {
@@ -148,15 +157,45 @@ class SuperAdminController extends Controller
         return view('superadmin.tenants.show', compact('tenant'));
     }
 
-    public function destroy(Tenant $tenant)
+        public function destroy(Tenant $tenant)
     {
         try {
+            $subdomain = $tenant->subdomain; // capture before deletion
+
             $tenant->delete();
+
+            try {
+                (new HostsFileService())->removeTenantEntry($subdomain);
+            } catch (\Throwable $e) {
+                Log::warning("Tenant deleted but hosts file entry could not be removed: " . $e->getMessage());
+            }
 
             return redirect()->route('superadmin.tenants.index')
                 ->with('success', 'Tenant deleted successfully');
         } catch (\Exception $e) {
             return back()->with('error', 'Error deleting tenant: ' . $e->getMessage());
         }
+    }
+
+    private function generateTenantId(string $name): string
+    {
+        $base = preg_replace('/[^a-z0-9]+/', '_', strtolower($name));
+        $base = trim($base, '_');
+
+        if (!preg_match('/^[a-z]/', $base)) {
+            $base = 'tenant_' . $base;
+        }
+
+        $base = substr($base, 0, 50); // MySQL DB name limit is 64 incl. prefix
+
+        $candidate = $base;
+        $counter   = 2;
+
+        while (Tenant::where('id', $candidate)->exists()) {
+            $candidate = $base . '_' . $counter;
+            $counter++;
+        }
+
+        return $candidate;
     }
 }
